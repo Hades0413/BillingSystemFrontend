@@ -1,0 +1,71 @@
+<div class="register-container">
+    <h2>Registro</h2>
+    <form (ngSubmit)="register()">
+      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
+      <div class="form-group">
+        <label for="UsuarioCorreo">Correo Electrónico</label>
+        <input
+          type="email"
+          id="UsuarioCorreo"
+          [(ngModel)]="user.UsuarioCorreo"
+          name="UsuarioCorreo"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="UsuarioContrasena">Contraseña</label>
+        <input
+          type="password"
+          id="UsuarioContrasena"
+          [(ngModel)]="user.UsuarioContrasena"
+          name="UsuarioContrasena"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="UsuarioNombres">Nombres</label>
+        <input
+          type="text"
+          id="UsuarioNombres"
+          [(ngModel)]="user.UsuarioNombres"
+          name="UsuarioNombres"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="UsuarioApellidos">Apellidos</label>
+        <input
+          type="text"
+          id="UsuarioApellidos"
+          [(ngModel)]="user.UsuarioApellidos"
+          name="UsuarioApellidos"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="UsuarioTelefono">Teléfono</label>
+        <input
+          type="text"
+          id="UsuarioTelefono"
+          [(ngModel)]="user.UsuarioTelefono"
+          name="UsuarioTelefono"
+          required
+          class="form-control"
+        />
+      </div>
+  
+      <button type="submit" [disabled]="isSubmitting" class="btn btn-primary">
+        Registrar
+      </button>
+    </form>
+  </div>
+  
