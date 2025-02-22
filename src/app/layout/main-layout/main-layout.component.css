@@ -1,0 +1,23 @@
+.sidebar-container {
+  width: 250px; /* Ancho del Sidebar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.content-container {
+  margin-left: 250px; /* El contenido se moverá hacia la derecha para dejar espacio para el Sidebar */
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .sidebar-container {
+    width: 100%;
+    height: auto;
+  }
+
+  .content-container {
+    margin-left: 0;
+  }
+}

@@ -29,9 +29,30 @@ export class AuthService {
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('userEmail', usuarioCorreo);
+
+          // Acceder correctamente al usuarioId desde response.data
+          this.getUsuarioId(usuarioCorreo).subscribe((usuarioResponse: any) => {
+            if (
+              usuarioResponse &&
+              usuarioResponse.data &&
+              usuarioResponse.data.usuarioId
+            ) {
+              const usuarioId = usuarioResponse.data.usuarioId;
+              localStorage.setItem('UsuarioId', usuarioId.toString());
+            } else {
+              console.error(
+                'No se pudo obtener el usuarioId. Respuesta del servidor:',
+                usuarioResponse
+              );
+            }
+          });
         }
       })
     );
+  }
+
+  getUsuarioId(correo: string): Observable<any> {
+    return this.http.get(`${this.registerApiUrl}/correo/${correo}`);
   }
 
   isAuthenticated(): boolean {
@@ -44,5 +65,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('UsuarioId');
   }
 }

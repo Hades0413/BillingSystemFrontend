@@ -1,71 +1,86 @@
 <div class="register-container">
-    <h2>Registro</h2>
+  <mat-card class="register-card">
+    <h2 class="text-center">Registro</h2>
+
     <form (ngSubmit)="register()">
-      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-  
-      <div class="form-group">
-        <label for="UsuarioCorreo">Correo Electrónico</label>
+      <mat-form-field appearance="fill" class="form-group">
+        <mat-label>Correo Electrónico</mat-label>
         <input
+          matInput
           type="email"
           id="UsuarioCorreo"
           [(ngModel)]="user.UsuarioCorreo"
           name="UsuarioCorreo"
           required
-          class="form-control"
         />
-      </div>
-  
-      <div class="form-group">
-        <label for="UsuarioContrasena">Contraseña</label>
+        <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="form-group">
+        <mat-label>Contraseña</mat-label>
         <input
+          matInput
           type="password"
           id="UsuarioContrasena"
           [(ngModel)]="user.UsuarioContrasena"
           name="UsuarioContrasena"
           required
-          class="form-control"
         />
-      </div>
-  
-      <div class="form-group">
-        <label for="UsuarioNombres">Nombres</label>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="form-group">
+        <mat-label>Nombres</mat-label>
         <input
+          matInput
           type="text"
           id="UsuarioNombres"
           [(ngModel)]="user.UsuarioNombres"
           name="UsuarioNombres"
           required
-          class="form-control"
         />
-      </div>
-  
-      <div class="form-group">
-        <label for="UsuarioApellidos">Apellidos</label>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="form-group">
+        <mat-label>Apellidos</mat-label>
         <input
+          matInput
           type="text"
           id="UsuarioApellidos"
           [(ngModel)]="user.UsuarioApellidos"
           name="UsuarioApellidos"
           required
-          class="form-control"
         />
-      </div>
-  
-      <div class="form-group">
-        <label for="UsuarioTelefono">Teléfono</label>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="form-group">
+        <mat-label>Teléfono</mat-label>
         <input
+          matInput
           type="text"
           id="UsuarioTelefono"
           [(ngModel)]="user.UsuarioTelefono"
           name="UsuarioTelefono"
           required
-          class="form-control"
         />
+      </mat-form-field>
+
+      <div class="button-container">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="isSubmitting"
+          class="submit-button"
+        >
+          Registrar
+        </button>
       </div>
-  
-      <button type="submit" [disabled]="isSubmitting" class="btn btn-primary">
-        Registrar
-      </button>
     </form>
-  </div>
-  
+
+    <div class="login-link">
+      <p class="text-center">
+        ¿Ya tengo una cuenta? <a routerLink="/login">Iniciar sesión</a>
+      </p>
+    </div>
+  </mat-card>
+</div>

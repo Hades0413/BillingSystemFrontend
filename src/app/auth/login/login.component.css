@@ -1,100 +1,79 @@
-
+/* Estilos generales para la página */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  font-family: "Roboto", sans-serif;
+  background-color: #f4f7fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  height: 100%;
+}
+
+.login-card {
+  background-color: #fff;
+  padding: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #3f51b5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .login-card {
+    padding: 20px;
+    max-width: 90%;
   }
-  
-  .login-container {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-    text-align: center;
-  }
-  
+
   h2 {
-    color: #333;
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 20px;
   }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-  
-  label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-  }
-  
-  input {
+
+  button {
     padding: 10px;
     font-size: 14px;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
   }
-  
-  input:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .error {
-    color: #ff0000;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  button {
-    padding: 12px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  button:hover:not(:disabled) {
-    background-color: #0056b3;
-  }
-  
-  button + button {
-    margin-top: 15px;
-  }
-  
-  button[disabled] {
-    opacity: 0.7;
-  }
-  
-  body {
-    background-color: #f7f8fa;
-  }
-  
+}

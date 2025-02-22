@@ -1,0 +1,93 @@
+/* Estilo base del Sidebar */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .sidebar-header {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .sidebar-item:hover {
+    background-color: #555;
+  }
+  
+  .logout-button {
+    margin-top: auto;
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Estilos para pantallas pequeñas */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px;
+      padding: 15px;
+    }
+  
+    .sidebar-item {
+      padding: 8px;
+    }
+  
+    .logout-button {
+      padding: 8px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: width 0.3s ease;
+    }
+  
+    .sidebar.open {
+      width: 250px;
+    }
+  
+    .sidebar-header {
+      display: none;
+    }
+  
+    .sidebar-item {
+      font-size: 14px;
+    }
+  
+    .logout-button {
+      font-size: 14px;
+    }
+  }
+  

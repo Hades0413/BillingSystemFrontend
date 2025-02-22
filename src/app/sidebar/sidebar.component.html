@@ -1,0 +1,13 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menú</h2>
+  </div>
+
+  <ul class="sidebar-list">
+    <li (click)="navigateTo('/productos')" class="sidebar-item">Producto</li>
+    <li (click)="navigateTo('/compras')" class="sidebar-item">Compras</li>
+    <li (click)="navigateTo('/ventas')" class="sidebar-item">Ventas</li>
+  </ul>
+
+  <button (click)="logout()" class="logout-button">Cerrar Sesión</button>
+</div>
