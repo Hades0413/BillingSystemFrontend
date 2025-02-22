@@ -30,7 +30,6 @@ export class AuthService {
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('userEmail', usuarioCorreo);
 
-          // Acceder correctamente al usuarioId desde response.data
           this.getUsuarioId(usuarioCorreo).subscribe((usuarioResponse: any) => {
             if (
               usuarioResponse &&

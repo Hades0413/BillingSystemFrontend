@@ -25,10 +25,9 @@ export class CategoriaComponent implements OnInit {
   }
 
   loadCategorias(): void {
-    // Recuperamos las categorías directamente desde el servicio sin pasar el usuarioId
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response) => {
-        this.categorias = response; // Almacena las categorías que llegan desde la API
+        this.categorias = response;
         this.isLoading = false;
       },
       (error) => {

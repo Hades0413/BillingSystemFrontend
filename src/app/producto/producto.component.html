@@ -19,76 +19,116 @@
     <mat-table [dataSource]="paginatedProductos" matSort>
       <!-- Código -->
       <ng-container matColumnDef="ProductoCodigo">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Código </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoCodigo }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Código
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">{{
+          producto.ProductoCodigo
+        }}</mat-cell>
       </ng-container>
 
       <!-- Nombre -->
       <ng-container matColumnDef="ProductoNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoNombre }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Nombre
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">{{
+          producto.ProductoNombre
+        }}</mat-cell>
       </ng-container>
 
       <!-- Stock -->
       <ng-container matColumnDef="ProductoStock">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Stock </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoStock }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Stock
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">{{
+          producto.ProductoStock
+        }}</mat-cell>
       </ng-container>
 
       <!-- Precio -->
       <ng-container matColumnDef="ProductoPrecioVenta">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Precio </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoPrecioVenta }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Precio
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">
+          {{
+            producto.ProductoPrecioVenta | currency : "S/" : "symbol" : "1.2-2"
+          }}
+        </mat-cell>
       </ng-container>
 
       <!-- Impuesto IGV -->
       <ng-container matColumnDef="ProductoImpuestoIgv">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Impuesto IGV </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoImpuestoIgv  }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Impuesto IGV
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">
+          {{
+            producto.ProductoImpuestoIgv | currency : "S/" : "symbol" : "1.2-2"
+          }}
+        </mat-cell>
       </ng-container>
 
       <!-- Categoría -->
       <ng-container matColumnDef="CategoriaNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Categoría </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.CategoriaNombre }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Categoría
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">
+          {{
+            getCategoriaById(producto.CategoriaId)?.CategoriaNombre ||
+              "Categoría no encontrada"
+          }}
+        </mat-cell>
       </ng-container>
 
       <!-- Imagen -->
       <ng-container matColumnDef="ProductoImagen">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Imagen </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.ProductoImagen }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Imagen
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">{{
+          producto.ProductoImagen
+        }}</mat-cell>
       </ng-container>
 
       <!-- Unidad -->
       <ng-container matColumnDef="UnidadNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Unidad </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{ producto.UnidadNombre }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Unidad
+        </mat-header-cell>
+        <mat-cell *matCellDef="let producto">{{
+          getUnidadById(producto.UnidadId)?.UnidadNombre ||
+            "Categoría no encontrada"
+        }}</mat-cell>
       </ng-container>
 
       <!-- Filas de la tabla -->
       <mat-header-row
         *matHeaderRowDef="[
-          'ProductoCodigo', 
-          'ProductoNombre', 
-          'ProductoStock', 
-          'ProductoPrecioVenta', 
-          'ProductoImpuestoIgv', 
-          'CategoriaNombre', 
-          'ProductoImagen', 
+          'ProductoCodigo',
+          'ProductoNombre',
+          'ProductoStock',
+          'ProductoPrecioVenta',
+          'ProductoImpuestoIgv',
+          'CategoriaNombre',
+          'ProductoImagen',
           'UnidadNombre'
         ]"
       ></mat-header-row>
       <mat-row
         *matRowDef="
-          let row; 
+          let row;
           columns: [
-            'ProductoCodigo', 
-            'ProductoNombre', 
-            'ProductoStock', 
-            'ProductoPrecioVenta', 
-            'ProductoImpuestoIgv', 
-            'CategoriaNombre', 
-            'ProductoImagen', 
+            'ProductoCodigo',
+            'ProductoNombre',
+            'ProductoStock',
+            'ProductoPrecioVenta',
+            'ProductoImpuestoIgv',
+            'CategoriaNombre',
+            'ProductoImagen',
             'UnidadNombre'
           ]
         "
