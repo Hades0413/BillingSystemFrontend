@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CategoriaService } from './categoria.service';
 import { Categoria } from '../shared/categoria.model';
 
@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-register-categoria',
@@ -24,7 +25,9 @@ import { FormBuilder, Validators } from '@angular/forms';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RegisterCategoriaComponent implements OnInit {
   categoriaForm: any;

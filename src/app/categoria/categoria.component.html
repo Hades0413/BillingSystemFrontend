@@ -2,14 +2,30 @@
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
   <mat-card *ngIf="errorMessage" class="error-card">
-    <mat-card-content>{{ errorMessage }}</mat-card-content> </mat-card
-  ><!-- Barra de búsqueda -->
+    <mat-card-content>{{ errorMessage }}</mat-card-content>
+  </mat-card>
+
+  <!-- Barra de búsqueda -->
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <mat-form-field appearance="outline" class="w-50">
       <mat-label>Buscar Categoría</mat-label>
       <input matInput [(ngModel)]="searchTerm" (input)="filterCategorias()" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
+  </div>
+
+  <!-- Botón Crear Categoría -->
+  <div class="mb-3 d-flex justify-content-end">
+    <button mat-raised-button color="primary" (click)="openRegisterCategoria()">
+      Crear Categoría
+    </button>
+  </div>
+
+  <!-- Mostrar el formulario de registro como un modal -->
+  <div *ngIf="showRegisterCategoria" class="modal-overlay" (click)="closeRegisterCategoria()">
+    <div class="modal-content" (click)="$event.stopPropagation()"> <!-- Evitar que el click cierre el modal -->
+      <app-register-categoria></app-register-categoria>
+    </div>
   </div>
 
   <div *ngIf="!isLoading && !errorMessage">
@@ -19,38 +35,20 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>
           Orden
         </mat-header-cell>
-        <mat-cell *matCellDef="let categoria; let i = index">{{
-          i + 1
-        }}</mat-cell>
+        <mat-cell *matCellDef="let categoria; let i = index">{{ i + 1 }}</mat-cell>
       </ng-container>
 
       <!-- Nombre -->
       <ng-container matColumnDef="CategoriaNombre">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          (click)="toggleFilter('nombre')"
-          [class.filter-active]="activeFilter === 'nombre'"
-        >
+        <mat-header-cell *matHeaderCellDef mat-sort-header (click)="toggleFilter('nombre')" [class.filter-active]="activeFilter === 'nombre'">
           <div class="filter-header">
             <span>Nombre</span>
-            <div
-              class="filter-input-container"
-              *ngIf="activeFilter === 'nombre'"
-            >
-              <input
-                matInput
-                [(ngModel)]="filterNombre"
-                (input)="applyFilter()"
-                (click)="$event.stopPropagation()"
-                placeholder="Filtrar"
-              />
+            <div class="filter-input-container" *ngIf="activeFilter === 'nombre'">
+              <input matInput [(ngModel)]="filterNombre" (input)="applyFilter()" (click)="$event.stopPropagation()" placeholder="Filtrar" />
             </div>
           </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let categoria">{{
-          categoria.CategoriaNombre
-        }}</mat-cell>
+        <mat-cell *matCellDef="let categoria">{{ categoria.CategoriaNombre }}</mat-cell>
       </ng-container>
 
       <!-- Acciones -->
@@ -70,11 +68,6 @@
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <mat-paginator
-      [length]="categorias.length"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      (page)="changePage($event)"
-    ></mat-paginator>
+    <mat-paginator [length]="categorias.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="changePage($event)"></mat-paginator>
   </div>
 </div>

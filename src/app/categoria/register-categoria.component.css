@@ -1,61 +1,111 @@
-/* register-categoria.component.css */
+
 .register-categoria-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+mat-card {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fafafa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+mat-card-title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+button {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:disabled {
+  background-color: #bcbcbc;
+  cursor: not-allowed;
+}
+
+mat-error {
+  font-size: 12px;
+  color: #f44336;
+  margin-top: 5px;
+}
+
+.message-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+mat-chip-list {
+  width: 100%;
+}
+
+mat-chip {
+  margin: 5px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+mat-chip.mat-primary {
+  background-color: #4caf50;
+  color: white;
+}
+
+mat-chip.mat-warn {
+  background-color: #f44336;
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .register-categoria-container {
+    padding: 15px;
   }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
+
+  mat-card {
+    padding: 15px;
   }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  input.form-control {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
+
   button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  mat-form-field {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    background-color: #28a745;
-    color: white;
-    border: none;
   }
-  
-  button:disabled {
-    background-color: #ccc;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 12px;
-  }
-  
-  .alert {
-    margin-top: 15px;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .alert-success {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .alert-danger {
-    background-color: #dc3545;
-    color: white;
-  }
-  
+}

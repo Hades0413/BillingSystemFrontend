@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PageEvent } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
+import { RegisterCategoriaComponent } from './register-categoria.component';
 
 @Component({
   selector: 'app-categoria',
@@ -34,6 +35,7 @@ import Swal from 'sweetalert2';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    RegisterCategoriaComponent,
   ],
 })
 export class CategoriaComponent implements OnInit {
@@ -180,5 +182,18 @@ export class CategoriaComponent implements OnInit {
           );
       }
     });
+  }
+
+  // Variable para controlar la visibilidad del componente de registro
+  showRegisterCategoria: boolean = false;
+
+  // Método para abrir el modal
+  openRegisterCategoria(): void {
+    this.showRegisterCategoria = true;
+  }
+
+  // Método para cerrar el modal
+  closeRegisterCategoria(): void {
+    this.showRegisterCategoria = false;
   }
 }
