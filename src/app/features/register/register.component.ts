@@ -16,6 +16,9 @@ import { Empresa } from '../../shared/empresa.model';
 import { Rubro } from '../../shared/rubro.model';
 import Swal from 'sweetalert2';
 
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Component({
   selector: 'app-dashboard-register',
   standalone: true,
