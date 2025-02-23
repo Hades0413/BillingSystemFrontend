@@ -1,0 +1,45 @@
+<div class="register-categoria-container">
+  <h2>Registrar Categoría</h2>
+
+  <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="categoriaNombre">Nombre de la Categoría:</label>
+      <input
+        id="categoriaNombre"
+        type="text"
+        formControlName="categoriaNombre"
+        class="form-control"
+        placeholder="Ingrese el nombre de la categoría"
+      />
+      <div
+        *ngIf="
+          categoriaForm.controls['categoriaNombre'].invalid &&
+          categoriaForm.controls['categoriaNombre'].touched
+        "
+      >
+        <small class="error-message">
+          El nombre es obligatorio y debe tener al menos 3 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="categoriaForm.invalid"
+      class="btn btn-primary"
+    >
+      Registrar Categoría
+    </button>
+  </form>
+
+  <div
+    *ngIf="mensaje"
+    class="alert"
+    [ngClass]="{
+      'alert-success': mensaje.includes('exitosamente'),
+      'alert-danger': mensaje.includes('error')
+    }"
+  >
+    {{ mensaje }}
+  </div>
+</div>

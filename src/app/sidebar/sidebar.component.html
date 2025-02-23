@@ -1,13 +1,34 @@
-<div class="sidebar">
+<div class="sidebar" [class.sidebar-closed]="isSidebarClosed">
   <div class="sidebar-header">
-    <h2>Menú</h2>
+    <h2 *ngIf="!isSidebarClosed">Menú</h2>
+    <!-- Solo mostrar texto si el sidebar está abierto -->
+    <button (click)="toggleSidebar()" class="sidebar-toggle">
+      <mat-icon>menu</mat-icon>
+      <!-- Usamos un icono de Angular Material -->
+    </button>
   </div>
 
-  <ul class="sidebar-list">
-    <li (click)="navigateTo('/productos')" class="sidebar-item">Producto</li>
-    <li (click)="navigateTo('/compras')" class="sidebar-item">Compras</li>
-    <li (click)="navigateTo('/ventas')" class="sidebar-item">Ventas</li>
+  <ul class="sidebar-list" *ngIf="!isSidebarClosed">
+    <li (click)="navigateTo('/productos')" class="sidebar-item">
+      <mat-icon class="sidebar-icon">category</mat-icon>
+      <span class="sidebar-text">Producto</span>
+    </li>
+    <li (click)="navigateTo('/categorias')" class="sidebar-item">
+      <mat-icon class="sidebar-icon">category</mat-icon>
+      <span class="sidebar-text">categorias</span>
+    </li>
+    <li (click)="navigateTo('/compras')" class="sidebar-item">
+      <mat-icon class="sidebar-icon">shopping_cart</mat-icon>
+      <span class="sidebar-text">Compras</span>
+    </li>
+    <li (click)="navigateTo('/ventas')" class="sidebar-item">
+      <mat-icon class="sidebar-icon">store</mat-icon>
+      <span class="sidebar-text">Ventas</span>
+    </li>
   </ul>
 
-  <button (click)="logout()" class="logout-button">Cerrar Sesión</button>
+  <button (click)="logout()" class="logout-button" *ngIf="!isSidebarClosed">
+    <mat-icon>exit_to_app</mat-icon>
+    <span class="sidebar-text">Cerrar Sesión</span>
+  </button>
 </div>

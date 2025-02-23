@@ -1,93 +1,130 @@
-/* Estilo base del Sidebar */
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+/* Sidebar general */
 .sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #333;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .sidebar-header {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .sidebar-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar-item {
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .sidebar-item:hover {
-    background-color: #555;
-  }
-  
-  .logout-button {
-    margin-top: auto;
-    background-color: #e74c3c;
-    border: none;
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
+  width: 250px; /* Ancho completo cuando está abierto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #333;
+  color: white;
+  transition: width 0.3s ease, transform 0.3s ease; /* Transición suave */
+  z-index: 1000;
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+}
+
+.sidebar-closed {
+  width: 50px; /* Ancho reducido cuando el sidebar está cerrado */
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #444;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #444;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-item:hover {
+  background-color: #555;
+}
+
+/* Estilo para los iconos */
+.sidebar-icon {
+  margin-right: 10px;
+  font-size: 24px; /* Ajustar el tamaño de los iconos */
+}
+
+/* Estilo para los textos dentro del sidebar */
+.sidebar-text {
+  transition: opacity 0.3s ease-in-out;
+  opacity: 1;
+}
+
+/* Cuando el sidebar está cerrado, ocultamos los textos */
+.sidebar-closed .sidebar-text {
+  opacity: 0;
+}
+
+/* Estilo para el botón de logout */
+.logout-button {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logout-button .material-icons {
+  margin-right: 5px;
+}
+
+/* Estilos cuando el sidebar está cerrado: */
+.sidebar-closed .sidebar-toggle {
+  position: fixed;
+  top: 20px;
+  left: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 30px;
+  z-index: 1001; /* Aseguramos que el botón de hamburguesa esté encima del contenido */
+  color: white;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .sidebar {
     width: 100%;
-    transition: background-color 0.3s;
+    transform: translateX(-100%);
   }
-  
-  .logout-button:hover {
-    background-color: #c0392b;
+
+  .sidebar-closed {
+    width: 50px;
+    transform: translateX(0);
   }
-  
-  /* Estilos para pantallas pequeñas */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 200px;
-      padding: 15px;
-    }
-  
-    .sidebar-item {
-      padding: 8px;
-    }
-  
-    .logout-button {
-      padding: 8px;
-    }
+
+  .content-container {
+    margin-left: 0;
   }
-  
-  @media (max-width: 600px) {
-    .sidebar {
-      width: 0;
-      padding: 0;
-      overflow: hidden;
-      transition: width 0.3s ease;
-    }
-  
-    .sidebar.open {
-      width: 250px;
-    }
-  
-    .sidebar-header {
-      display: none;
-    }
-  
-    .sidebar-item {
-      font-size: 14px;
-    }
-  
-    .logout-button {
-      font-size: 14px;
-    }
+
+  .sidebar-header h2 {
+    display: none;
   }
-  
+
+  .sidebar-item {
+    font-size: 14px;
+  }
+
+  .sidebar-item .sidebar-icon {
+    font-size: 20px; /* Ajustar el tamaño de los íconos en dispositivos pequeños */
+  }
+}

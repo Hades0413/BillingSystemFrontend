@@ -1,23 +1,43 @@
+/* Estilo para la disposición de la página */
+.main-layout {
+  height: 100vh;
+  transition: all 0.3s ease; /* Transición suave para todo el layout */
+}
+
+/* Sidebar */
 .sidebar-container {
-  width: 250px; /* Ancho del Sidebar */
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  transition: transform 0.3s ease;
+  width: 15%; 
+  min-width: 200px;
+}
+
+.sidebar-closed .sidebar-container {
+  transform: translateX(3%);
+  width: 3%;
 }
 
 .content-container {
-  margin-left: 250px; /* El contenido se moverá hacia la derecha para dejar espacio para el Sidebar */
+  flex: 1;
   padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 13%;
 }
 
-@media (max-width: 600px) {
+.sidebar-closed .content-container {
+  margin-left: 3%; 
+}
+
+@media (max-width: 768px) {
   .sidebar-container {
-    width: 100%;
-    height: auto;
+    width: 100%; 
+  }
+
+  .sidebar-closed .sidebar-container {
+    transform: translateX(-100%);
+    width: 10%; 
   }
 
   .content-container {
-    margin-left: 0;
+    margin-left: 0; 
   }
 }

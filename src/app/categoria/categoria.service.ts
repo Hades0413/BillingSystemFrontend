@@ -21,10 +21,14 @@ export class CategoriaService {
     }
   }
 
-  registerUser(categoria: Categoria): Observable<any> {
+  registerCategoriasPorUsuario(categoria: Categoria): Observable<any> {
     const usuarioId = localStorage.getItem('UsuarioId');
     if (usuarioId) {
-      return this.http.post(`${this.categoriaApiUrl}/registrar?usuarioId=${usuarioId}`, categoria);
+      const categoriaConUsuarioId = {
+        ...categoria,
+        UsuarioId: parseInt(usuarioId, 10),
+      };
+      return this.http.post(`${this.categoriaApiUrl}/registrar`, categoriaConUsuarioId);
     } else {
       throw new Error('Usuario no autenticado');
     }

@@ -6,6 +6,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { RegisterEmpresaComponent } from './empresa/register-empresa.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { ProductoComponent } from './producto/producto.component';
+import { DashboardPrducto } from './features/productos/producto.component';
+import { CategoriaComponent } from './categoria/categoria.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +20,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'productos', component: ProductoComponent },/*
+      { path: 'productos', component: DashboardPrducto },
+      { path: 'categorias', component: CategoriaComponent },/*
       { path: 'ventas', component: VentasComponent },*/
     ],
   },
