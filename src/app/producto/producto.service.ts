@@ -21,4 +21,18 @@ export class ProductoService {
       `${this.productoApiUrl}/listar/${usuarioId}`
     );
   }
+
+  // Método para editar un producto
+  editarProducto(productoId: number, producto: Producto): Observable<any> {
+    return this.http.put(
+      `${this.productoApiUrl}/editar/${productoId}`,
+      producto
+    );
+  }
+
+  // Método para eliminar un producto
+  eliminarProducto(productoId: number): Observable<any> {
+    return this.http.delete(`${this.productoApiUrl}/eliminar/${productoId}`);
+  }
+
 }

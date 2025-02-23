@@ -115,7 +115,8 @@
           'ProductoImpuestoIgv',
           'CategoriaNombre',
           'ProductoImagen',
-          'UnidadNombre'
+          'UnidadNombre',
+          'Acciones'
         ]"
       ></mat-header-row>
       <mat-row
@@ -129,10 +130,23 @@
             'ProductoImpuestoIgv',
             'CategoriaNombre',
             'ProductoImagen',
-            'UnidadNombre'
+            'UnidadNombre',
+            'Acciones'
           ]
         "
       ></mat-row>
+
+      <ng-container matColumnDef="Acciones">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let producto">
+          <button mat-icon-button (click)="editarProducto(producto)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="(producto)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
     </mat-table>
 
     <!-- Paginación -->
@@ -143,4 +157,5 @@
     >
     </mat-paginator>
   </div>
+
 </div>

@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Editar Producto</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Nombre del Producto</mat-label>
+    <input matInput [(ngModel)]="data.ProductoNombre" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Stock</mat-label>
+    <input matInput [(ngModel)]="data.ProductoStock" type="number" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Precio de Venta</mat-label>
+    <input matInput [(ngModel)]="data.ProductoPrecioVenta" type="number" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Impuesto IGV</mat-label>
+    <input matInput [(ngModel)]="data.ProductoImpuestoIgv" type="number" />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button (click)="saveProducto()">Guardar</button>
+</mat-dialog-actions>

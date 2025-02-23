@@ -19,6 +19,12 @@ import { Categoria } from '../shared/categoria.model';
 import { CategoriaService } from '../categoria/categoria.service';
 import { Unidad } from '../shared/unidad.model';
 import { UnidadService } from '../unidad/unidad.service';
+import { EditarProductoComponent } from './editar-producto.component';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-producto',
@@ -43,6 +49,7 @@ export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
   unidades: Unidad[] = [];
+  productoParaEditar: Producto | null = null;
   paginatedProductos: Producto[] = [];
   totalItems: number = 0;
   pageSize: number = 10;
@@ -71,7 +78,8 @@ export class ProductoComponent implements OnInit {
     private productoService: ProductoService,
     private categoriaService: CategoriaService,
     private unidadeService: UnidadService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -99,12 +107,11 @@ export class ProductoComponent implements OnInit {
       }
     );
   }
-  
+
   getUnidadById(unidadId: number) {
     const unidad = this.unidades.find((u) => u.UnidadId === unidadId);
     return unidad;
   }
-  
 
   loadCategorias(): void {
     this.categoriaService.getCategoriasPorUsuario().subscribe(
@@ -251,5 +258,18 @@ export class ProductoComponent implements OnInit {
         (producto) => (this.selectedProductos[producto.ProductoId] = false)
       );
     }
+  }
+
+  editarProducto(producto: Producto): void {
+    const dialogRef = this.dialog.open(EditarProductoComponent, {
+      width: '500px',
+      data: producto,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Producto editado:', result);
+      }
+    });
   }
 }

@@ -87,7 +87,7 @@ export class CategoriaComponent implements OnInit {
       event.pageSize
     );
   }
-
+  // Método para editar categoría
   editCategoria(categoria: Categoria): void {
     Swal.fire({
       title: 'Editar categoría',
@@ -105,11 +105,31 @@ export class CategoriaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         categoria.CategoriaNombre = result.value;
-        Swal.fire('Guardado', 'La categoría ha sido actualizada', 'success');
+
+        // Llamar al servicio para editar la categoría
+        this.categoriaService
+          .editarCategoria(categoria.CategoriaId, categoria)
+          .subscribe(
+            (response) => {
+              Swal.fire(
+                'Guardado',
+                'La categoría ha sido actualizada',
+                'success'
+              );
+            },
+            (error) => {
+              Swal.fire(
+                'Error',
+                'Hubo un problema al actualizar la categoría',
+                'error'
+              );
+            }
+          );
       }
     });
   }
 
+  // Método para eliminar categoría
   deleteCategoria(categoria: Categoria): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -120,8 +140,22 @@ export class CategoriaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('Eliminado', 'La categoría ha sido eliminada', 'success');
+        // Llamar al servicio para eliminar la categoría
+        this.categoriaService.eliminarCategoria(categoria.CategoriaId).subscribe(
+          (response) => {
+            Swal.fire('Eliminado', 'La categoría ha sido eliminada', 'success');
+          },
+          (error) => {
+            // Aquí estamos capturando el mensaje del error que viene del backend
+            if (error.error && error.error.message) {
+              Swal.fire('Error', error.error.message, 'error');
+            } else {
+              Swal.fire('Error', 'Hubo un problema al eliminar la categoría', 'error');
+            }
+          }
+        );
       }
     });
   }
+  
 }

@@ -15,9 +15,11 @@ export class CategoriaService {
   getCategoriasPorUsuario(): Observable<Categoria[]> {
     const usuarioId = parseInt(localStorage.getItem('UsuarioId')!, 10);
     if (usuarioId) {
-      return this.http.get<Categoria[]>(`${this.categoriaApiUrl}/listar?usuarioId=${usuarioId}`);
+      return this.http.get<Categoria[]>(
+        `${this.categoriaApiUrl}/listar?usuarioId=${usuarioId}`
+      );
     } else {
-      throw new Error('Usuario no autenticado'); 
+      throw new Error('Usuario no autenticado');
     }
   }
 
@@ -28,11 +30,25 @@ export class CategoriaService {
         ...categoria,
         UsuarioId: parseInt(usuarioId, 10),
       };
-      return this.http.post(`${this.categoriaApiUrl}/registrar`, categoriaConUsuarioId);
+      return this.http.post(
+        `${this.categoriaApiUrl}/registrar`,
+        categoriaConUsuarioId
+      );
     } else {
       throw new Error('Usuario no autenticado');
     }
   }
 
-  
+  // Método para editar una categoría
+  editarCategoria(categoriaId: number, categoria: Categoria): Observable<any> {
+    return this.http.put(`${this.categoriaApiUrl}/editar/${categoriaId}`, {
+      CategoriaNombre: categoria.CategoriaNombre,
+      CategoriaInformacionAdicional: categoria.CategoriaInformacionAdicional,
+    });
+  }
+
+  // Método para eliminar una categoría
+  eliminarCategoria(categoriaId: number): Observable<any> {
+    return this.http.delete(`${this.categoriaApiUrl}/eliminar/${categoriaId}`);
+  }
 }
