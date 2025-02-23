@@ -1,0 +1,59 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  border: 1px solid #ccc;
+}
+
+.navbarPrimary {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;height: 55px;
+}
+
+p {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color: #333;
+  text-align: center;
+}
+
+span{cursor: pointer; color: #2dc954;}
+
+.navbar {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+}
+
+mat-toolbar {
+  color: white;
+}
+
+button {
+  font-size: 16px;
+  margin: 0 10px;
+  text-transform: none;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.content {
+  flex: 1;
+  margin-top: 0px;
+}
+
+.content h1 {
+  font-size: 28px;
+  color: #333;
+  text-align: center;
+}
+
+.content > div {
+  margin-top: 20px;
+}

@@ -1,10 +1,8 @@
 <div class="sidebar" [class.sidebar-closed]="isSidebarClosed">
   <div class="sidebar-header">
     <h2 *ngIf="!isSidebarClosed">Menú</h2>
-    <!-- Solo mostrar texto si el sidebar está abierto -->
     <button (click)="toggleSidebar()" class="sidebar-toggle">
       <mat-icon>menu</mat-icon>
-      <!-- Usamos un icono de Angular Material -->
     </button>
   </div>
 

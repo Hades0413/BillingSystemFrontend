@@ -18,7 +18,6 @@
 
 .content-container {
   flex: 1;
-  padding: 20px;
   transition: margin-left 0.3s ease-in-out;
   margin-left: 13%;
 }

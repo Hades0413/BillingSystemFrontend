@@ -56,7 +56,20 @@ export class ProductoComponent implements OnInit {
   selectedProductos: { [key: number]: boolean } = {};
   isLoading = true;
   errorMessage: string | null = null;
+
   searchTerm: string = '';
+
+  // Filtros individuales
+  filterCodigo: string = '';
+  filterNombre: string = '';
+  filterStock: string = '';
+  filterPrecio: string = '';
+  filterIgv: string = '';
+  filterCategoria: string = '';
+  filterImagen: string = '';
+  filterUnidad: string = '';
+  activeFilter: string | null = null;
+
   currentPage: number = 1;
   itemsPerPage: number = 5;
   sortDirection: string = 'asc';
@@ -73,6 +86,9 @@ export class ProductoComponent implements OnInit {
     | 'ProductoImagen'
     | 'ProductoFechaUltimaActualizacion' = 'ProductoId';
   selectAll: boolean = false;
+
+  public categoriaMap: { [key: number]: string } = {};
+  public unidadMap: { [key: number]: string } = {};
 
   constructor(
     private productoService: ProductoService,
@@ -96,6 +112,13 @@ export class ProductoComponent implements OnInit {
             UnidadId: unidad.unidadId,
             UnidadNombre: unidad.unidadNombre,
           }));
+          this.unidadMap = this.unidades.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.UnidadId]: curr.UnidadNombre,
+            }),
+            {}
+          );
         } else {
           this.errorMessage = 'No se encontraron unidades.';
         }
@@ -108,11 +131,6 @@ export class ProductoComponent implements OnInit {
     );
   }
 
-  getUnidadById(unidadId: number) {
-    const unidad = this.unidades.find((u) => u.UnidadId === unidadId);
-    return unidad;
-  }
-
   loadCategorias(): void {
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response: any) => {
@@ -122,6 +140,13 @@ export class ProductoComponent implements OnInit {
             CategoriaNombre: categoria.categoriaNombre,
             UsuarioId: categoria.usuarioId,
           }));
+          this.categoriaMap = this.categorias.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.CategoriaId]: curr.CategoriaNombre,
+            }),
+            {}
+          );
         } else {
           this.errorMessage = 'No se encontraron categorías.';
         }
@@ -132,21 +157,6 @@ export class ProductoComponent implements OnInit {
         this.isLoading = false;
       }
     );
-  }
-
-  getCategoriaNombre(categoriaId: number): string {
-    const categoria = this.categorias.find(
-      (c) => c.CategoriaId === categoriaId
-    );
-    if (categoria) {
-      return categoria.CategoriaNombre;
-    } else {
-      return 'Categoría no encontrada';
-    }
-  }
-
-  getCategoriaById(categoriaId: number) {
-    return this.categorias.find((c) => c.CategoriaId === categoriaId);
   }
 
   cargarProductos(): void {
@@ -187,19 +197,103 @@ export class ProductoComponent implements OnInit {
   paginateProducts(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = this.currentPage * this.itemsPerPage;
+
     this.paginatedProductos = this.productos
-      .filter(
-        (producto) =>
-          producto.ProductoNombre.toLowerCase().includes(
+      .filter((producto) => {
+        const categoriaNombre =
+          this.categoriaMap[producto.CategoriaId] || 'Categoría no encontrada';
+        const unidadNombre =
+          this.unidadMap[producto.UnidadId] || 'Unidad no encontrada';
+
+        return (
+          (!this.filterCodigo ||
+            producto.ProductoCodigo.toLowerCase().includes(
+              this.filterCodigo.toLowerCase()
+            )) &&
+          (!this.filterNombre ||
+            producto.ProductoNombre.toLowerCase().includes(
+              this.filterNombre.toLowerCase()
+            )) &&
+          (!this.filterStock ||
+            producto.ProductoStock.toString().includes(this.filterStock)) &&
+          (!this.filterPrecio ||
+            producto.ProductoPrecioVenta.toString().includes(
+              this.filterPrecio
+            )) &&
+          (!this.filterIgv ||
+            producto.ProductoImpuestoIgv.toString().includes(this.filterIgv)) &&
+          (!this.filterCategoria ||
+            categoriaNombre
+              .toLowerCase()
+              .includes(this.filterCategoria.toLowerCase())) &&
+          (!this.filterImagen ||
+            (producto.ProductoImagen || '')
+              .toLowerCase()
+              .includes(this.filterImagen.toLowerCase())) &&
+          (!this.filterUnidad ||
+            unidadNombre
+              .toLowerCase()
+              .includes(this.filterUnidad.toLowerCase()))
+        );
+      })
+      .sort((a, b) => {
+        if (this.sortDirection === 'asc') {
+          return a[this.sortColumn] > b[this.sortColumn] ? 1 : -1;
+        } else {
+          return a[this.sortColumn] < b[this.sortColumn] ? 1 : -1;
+        }
+      });
+
+    this.totalItems = this.paginatedProductos.length;
+    this.paginatedProductos = this.paginatedProductos.slice(
+      startIndex,
+      endIndex
+    );
+  }
+
+  paginateProductsearchTern(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = this.currentPage * this.itemsPerPage;
+
+    this.paginatedProductos = this.productos
+      .filter((producto) => {
+        const categoriaNombre =
+          this.categoriaMap[producto.CategoriaId] || 'Categoría no encontrada';
+        const unidadNombre =
+          this.unidadMap[producto.UnidadId] || 'Unidad no encontrada';
+
+        return (
+          (producto.ProductoNombre.toLowerCase().includes(
             this.searchTerm.toLowerCase()
           ) ||
-          producto.ProductoCodigo.toLowerCase().includes(
-            this.searchTerm.toLowerCase()
-          ) ||
-          producto.ProductoStock.toString().includes(this.searchTerm) ||
-          producto.ProductoPrecioVenta.toString().includes(this.searchTerm) ||
-          producto.ProductoImpuestoIgv.toString().includes(this.searchTerm)
-      )
+            producto.ProductoCodigo.toLowerCase().includes(
+              this.searchTerm.toLowerCase()
+            ) ||
+            producto.ProductoStock.toString().includes(this.searchTerm) ||
+            producto.ProductoPrecioVenta.toString().includes(this.searchTerm) ||
+            producto.ProductoImpuestoIgv.toString().includes(this.searchTerm) ||
+            categoriaNombre
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()) ||
+            unidadNombre
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase())) &&
+          (!this.filterIgv ||
+            producto.ProductoImpuestoIgv.toString().includes(this.filterIgv)) &&
+          (!this.filterCategoria ||
+            categoriaNombre
+              .toLowerCase()
+              .includes(this.filterCategoria.toLowerCase())) &&
+          (!this.filterImagen ||
+            (producto.ProductoImagen || '')
+              .toLowerCase()
+              .includes(this.filterImagen.toLowerCase())) &&
+          (!this.filterUnidad ||
+            unidadNombre
+              .toLowerCase()
+              .includes(this.filterUnidad.toLowerCase()))
+        );
+      })
       .sort((a, b) => {
         if (this.sortDirection === 'asc') {
           return a[this.sortColumn] > b[this.sortColumn] ? 1 : -1;
@@ -214,16 +308,6 @@ export class ProductoComponent implements OnInit {
     this.currentPage = event.pageIndex + 1;
     this.itemsPerPage = event.pageSize;
     this.paginateProducts();
-  }
-
-  totalPages(): number {
-    const filteredItems = this.productos.filter(
-      (producto) =>
-        producto.ProductoNombre.toLowerCase().includes(
-          this.searchTerm.toLowerCase()
-        ) || producto.ProductoId.toString().includes(this.searchTerm)
-    );
-    return Math.ceil(filteredItems.length / this.itemsPerPage);
   }
 
   sortData(
@@ -248,18 +332,6 @@ export class ProductoComponent implements OnInit {
     this.paginateProducts();
   }
 
-  toggleAll(): void {
-    if (this.selectAll) {
-      this.paginatedProductos.forEach(
-        (producto) => (this.selectedProductos[producto.ProductoId] = true)
-      );
-    } else {
-      this.paginatedProductos.forEach(
-        (producto) => (this.selectedProductos[producto.ProductoId] = false)
-      );
-    }
-  }
-
   editarProducto(producto: Producto): void {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       width: '500px',
@@ -271,5 +343,9 @@ export class ProductoComponent implements OnInit {
         console.log('Producto editado:', result);
       }
     });
+  }
+
+  toggleFilter(filterName: string): void {
+    this.activeFilter = this.activeFilter === filterName ? null : filterName;
   }
 }

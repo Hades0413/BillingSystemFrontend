@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5 producto">
   <h2 class="text-center mb-4">Lista de Productos</h2>
 
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
@@ -7,10 +7,11 @@
     <mat-card-content>{{ errorMessage }}</mat-card-content>
   </mat-card>
 
+
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <mat-form-field appearance="outline" class="w-50">
       <mat-label>Buscar Producto</mat-label>
-      <input matInput [(ngModel)]="searchTerm" (input)="paginateProducts()" />
+      <input matInput [(ngModel)]="searchTerm" (input)="paginateProductsearchTern()" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </div>
@@ -19,93 +20,217 @@
     <mat-table [dataSource]="paginatedProductos" matSort>
       <!-- Código -->
       <ng-container matColumnDef="ProductoCodigo">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Código
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('codigo')"
+          [class.filter-active]="activeFilter === 'codigo'"
+        >
+          <div class="filter-header">
+            <span>Código</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'codigo'">
+              <input
+                matInput
+                [(ngModel)]="filterCodigo"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{
-          producto.ProductoCodigo
-        }}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{ producto.ProductoCodigo }}</mat-cell>
       </ng-container>
 
       <!-- Nombre -->
       <ng-container matColumnDef="ProductoNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Nombre
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('nombre')"
+          [class.filter-active]="activeFilter === 'nombre'"
+        >
+          <div class="filter-header">
+            <span>Nombre</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'nombre'">
+              <input
+                matInput
+                [(ngModel)]="filterNombre"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{
-          producto.ProductoNombre
-        }}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{ producto.ProductoNombre }}</mat-cell>
       </ng-container>
 
       <!-- Stock -->
       <ng-container matColumnDef="ProductoStock">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Stock
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('stock')"
+          [class.filter-active]="activeFilter === 'stock'"
+        >
+          <div class="filter-header">
+            <span>Stock</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'stock'">
+              <input
+                matInput
+                [(ngModel)]="filterStock"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{
-          producto.ProductoStock
-        }}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{ producto.ProductoStock }}</mat-cell>
       </ng-container>
 
       <!-- Precio -->
       <ng-container matColumnDef="ProductoPrecioVenta">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Precio
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('precio')"
+          [class.filter-active]="activeFilter === 'precio'"
+        >
+          <div class="filter-header">
+            <span>Precio</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'precio'">
+              <input
+                matInput
+                [(ngModel)]="filterPrecio"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
         <mat-cell *matCellDef="let producto">
-          {{
-            producto.ProductoPrecioVenta | currency : "S/" : "symbol" : "1.2-2"
-          }}
+          {{ producto.ProductoPrecioVenta | currency : "S/" : "symbol" : "1.2-2" }}
         </mat-cell>
       </ng-container>
 
       <!-- Impuesto IGV -->
       <ng-container matColumnDef="ProductoImpuestoIgv">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Impuesto IGV
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('igv')"
+          [class.filter-active]="activeFilter === 'igv'"
+        >
+          <div class="filter-header">
+            <span>IGV</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'igv'">
+              <input
+                matInput
+                [(ngModel)]="filterIgv"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
         <mat-cell *matCellDef="let producto">
-          {{
-            producto.ProductoImpuestoIgv | currency : "S/" : "symbol" : "1.2-2"
-          }}
+          {{ producto.ProductoImpuestoIgv | currency : "S/" : "symbol" : "1.2-2" }}
         </mat-cell>
       </ng-container>
 
       <!-- Categoría -->
       <ng-container matColumnDef="CategoriaNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Categoría
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('categoria')"
+          [class.filter-active]="activeFilter === 'categoria'"
+        >
+          <div class="filter-header">
+            <span>Categoría</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'categoria'">
+              <input
+                matInput
+                [(ngModel)]="filterCategoria"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
         <mat-cell *matCellDef="let producto">
-          {{
-            getCategoriaById(producto.CategoriaId)?.CategoriaNombre ||
-              "Categoría no encontrada"
-          }}
+          {{ categoriaMap[producto.CategoriaId] || "Categoría no encontrada" }}
         </mat-cell>
       </ng-container>
 
       <!-- Imagen -->
       <ng-container matColumnDef="ProductoImagen">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Imagen
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('imagen')"
+          [class.filter-active]="activeFilter === 'imagen'"
+        >
+          <div class="filter-header">
+            <span>Imagen</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'imagen'">
+              <input
+                matInput
+                [(ngModel)]="filterImagen"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{
-          producto.ProductoImagen
-        }}</mat-cell>
+        <mat-cell *matCellDef="let producto">{{ producto.ProductoImagen }}</mat-cell>
       </ng-container>
 
       <!-- Unidad -->
       <ng-container matColumnDef="UnidadNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Unidad
+        <mat-header-cell 
+          *matHeaderCellDef 
+          mat-sort-header 
+          (click)="toggleFilter('unidad')"
+          [class.filter-active]="activeFilter === 'unidad'"
+        >
+          <div class="filter-header">
+            <span>Unidad</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'unidad'">
+              <input
+                matInput
+                [(ngModel)]="filterUnidad"
+                (input)="paginateProducts()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
-        <mat-cell *matCellDef="let producto">{{
-          getUnidadById(producto.UnidadId)?.UnidadNombre ||
-            "Categoría no encontrada"
-        }}</mat-cell>
+        <mat-cell *matCellDef="let producto">
+          {{ unidadMap[producto.UnidadId] || "Unidad no encontrada" }}
+        </mat-cell>
       </ng-container>
 
-      <!-- Filas de la tabla -->
+      <!-- Acciones -->
+      <ng-container matColumnDef="Acciones">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let producto">
+          <button mat-icon-button (click)="editarProducto(producto)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
       <mat-header-row
         *matHeaderRowDef="[
           'ProductoCodigo',
@@ -119,6 +244,7 @@
           'Acciones'
         ]"
       ></mat-header-row>
+
       <mat-row
         *matRowDef="
           let row;
@@ -135,27 +261,14 @@
           ]
         "
       ></mat-row>
-
-      <ng-container matColumnDef="Acciones">
-        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
-        <mat-cell *matCellDef="let producto">
-          <button mat-icon-button (click)="editarProducto(producto)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button (click)="(producto)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
     </mat-table>
 
-    <!-- Paginación -->
     <mat-paginator
       [length]="totalItems"
-      [pageSize]="pageSize"
+      [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[5, 10, 20]"
       (page)="changePage($event)"
     >
     </mat-paginator>
   </div>
-
 </div>

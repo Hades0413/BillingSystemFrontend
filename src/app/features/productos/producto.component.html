@@ -1,18 +1,21 @@
-<!-- dashboard.component.html -->
 <div class="dashboard">
-    <div class="sidebar">
-      <!-- Sidebar de navegación -->
-      <h2>Sidebar</h2>
-      <ul>
-        <li><a href="#">Productos</a></li>
-        <li><a href="#">Paquetes</a></li>
-        <li><a href="#">Categorias</a></li>
-      </ul>
-    </div>
-  
-    <div class="content">
-      <h1>Bienvenido al Dashboard</h1>
+  <mat-toolbar class="navbarPrimary">
+    <p>
+      Te encuentras en el mes de prueba gratis. Si deseas acceder a uno de
+      nuestros planes<span> Haz click aquí</span>
+    </p>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-toolbar class="navbar">
+      <button mat-button (click)="selectTab('producto')">Producto</button>
+      <button mat-button (click)="selectTab('categoria')">Categoría</button>
+    </mat-toolbar>
+    <div *ngIf="selectedTab === 'producto'">
       <app-producto></app-producto>
     </div>
+    <div *ngIf="selectedTab === 'categoria'">
+      <app-categoria></app-categoria>
+    </div>
   </div>
-  
+</div>

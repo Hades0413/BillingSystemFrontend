@@ -1,34 +1,31 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
-/* Sidebar general */
 .sidebar {
-  width: 250px; /* Ancho completo cuando está abierto */
+  width: 250px;
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
-  background-color: #333;
-  color: white;
-  transition: width 0.3s ease, transform 0.3s ease; /* Transición suave */
+  color: #000;
+  transition: width 0.3s ease, transform 0.3s ease;
   z-index: 1000;
-  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+  overflow-x: hidden;
 }
 
 .sidebar-closed {
-  width: 50px; /* Ancho reducido cuando el sidebar está cerrado */
+  width: 50px;
 }
 
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   padding: 20px;
-  background-color: #444;
 }
 
 .sidebar-toggle {
   background: none;
   border: none;
-  color: white;
+  color: #000;
   font-size: 30px;
   cursor: pointer;
 }
@@ -44,7 +41,6 @@
   align-items: center;
   padding: 15px;
   cursor: pointer;
-  border-bottom: 1px solid #444;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -52,24 +48,20 @@
   background-color: #555;
 }
 
-/* Estilo para los iconos */
 .sidebar-icon {
   margin-right: 10px;
-  font-size: 24px; /* Ajustar el tamaño de los iconos */
+  font-size: 24px;
 }
 
-/* Estilo para los textos dentro del sidebar */
 .sidebar-text {
   transition: opacity 0.3s ease-in-out;
   opacity: 1;
 }
 
-/* Cuando el sidebar está cerrado, ocultamos los textos */
 .sidebar-closed .sidebar-text {
   opacity: 0;
 }
 
-/* Estilo para el botón de logout */
 .logout-button {
   position: absolute;
   bottom: 20px;
@@ -88,7 +80,6 @@
   margin-right: 5px;
 }
 
-/* Estilos cuando el sidebar está cerrado: */
 .sidebar-closed .sidebar-toggle {
   position: fixed;
   top: 20px;
@@ -96,11 +87,10 @@
   background-color: transparent;
   border: none;
   font-size: 30px;
-  z-index: 1001; /* Aseguramos que el botón de hamburguesa esté encima del contenido */
-  color: white;
+  z-index: 1001; 
+  color: #000;
 }
 
-/* Responsividad para pantallas pequeñas */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -125,6 +115,6 @@
   }
 
   .sidebar-item .sidebar-icon {
-    font-size: 20px; /* Ajustar el tamaño de los íconos en dispositivos pequeños */
+    font-size: 20px; 
   }
 }
