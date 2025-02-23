@@ -1,15 +1,9 @@
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Lista de Categorías</h2>
-
-  <!-- Cargando indicador -->
+<div class="container mt-5 categoraia">
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
-  <!-- Mensaje de error -->
   <mat-card *ngIf="errorMessage" class="error-card">
-    <mat-card-content>{{ errorMessage }}</mat-card-content>
-  </mat-card>
-
-  <!-- Barra de búsqueda -->
+    <mat-card-content>{{ errorMessage }}</mat-card-content> </mat-card
+  ><!-- Barra de búsqueda -->
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <mat-form-field appearance="outline" class="w-50">
       <mat-label>Buscar Categoría</mat-label>
@@ -18,11 +12,9 @@
     </mat-form-field>
   </div>
 
-  <!-- Tabla de categorías -->
   <div *ngIf="!isLoading && !errorMessage">
     <mat-table [dataSource]="dataSource" matSort>
-      <!-- Definición de columnas -->
-
+      <!-- Orden -->
       <ng-container matColumnDef="Orden">
         <mat-header-cell *matHeaderCellDef mat-sort-header>
           Orden
@@ -32,38 +24,55 @@
         }}</mat-cell>
       </ng-container>
 
+      <!-- Nombre -->
       <ng-container matColumnDef="CategoriaNombre">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          Nombre
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          (click)="toggleFilter('nombre')"
+          [class.filter-active]="activeFilter === 'nombre'"
+        >
+          <div class="filter-header">
+            <span>Nombre</span>
+            <div
+              class="filter-input-container"
+              *ngIf="activeFilter === 'nombre'"
+            >
+              <input
+                matInput
+                [(ngModel)]="filterNombre"
+                (input)="applyFilter()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
         </mat-header-cell>
         <mat-cell *matCellDef="let categoria">{{
           categoria.CategoriaNombre
         }}</mat-cell>
       </ng-container>
 
+      <!-- Acciones -->
       <ng-container matColumnDef="Acciones">
-        <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
         <mat-cell *matCellDef="let categoria">
           <button mat-icon-button (click)="editCategoria(categoria)">
             <mat-icon>edit</mat-icon>
-            <!-- Icono de editar -->
           </button>
           <button mat-icon-button (click)="deleteCategoria(categoria)">
             <mat-icon>delete</mat-icon>
-            <!-- Icono de eliminar -->
           </button>
         </mat-cell>
       </ng-container>
 
-      <!-- Fila de la tabla -->
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <!-- Paginación -->
     <mat-paginator
       [length]="categorias.length"
-      [pageSize]="5"
+      [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25, 100]"
       (page)="changePage($event)"
     ></mat-paginator>

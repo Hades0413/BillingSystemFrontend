@@ -42,7 +42,10 @@ export class CategoriaComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   displayedColumns: string[] = ['Orden', 'CategoriaNombre', 'Acciones'];
-
+  activeFilter: string | null = null;
+  filterNombre: string = '';
+  pageSize: number = 5;
+  currentPage: number = 0;
   searchTerm: string = '';
 
   constructor(
@@ -54,15 +57,34 @@ export class CategoriaComponent implements OnInit {
     this.loadCategorias();
   }
 
+  filterCategorias(): void {
+    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
+  }
+
+  toggleFilter(filterName: string): void {
+    this.activeFilter = this.activeFilter === filterName ? null : filterName;
+  }
+
+  applyFilter(): void {
+    this.dataSource.data = this.categorias.filter((categoria) => {
+      return (
+        !this.filterNombre ||
+        categoria.CategoriaNombre.toLowerCase().includes(
+          this.filterNombre.toLowerCase()
+        )
+      );
+    });
+  }
+
   loadCategorias(): void {
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response: any) => {
-        if (response && response.data) {
+        if (response?.data) {
           this.categorias = response.data.map((categoria: any) => ({
             CategoriaId: categoria.categoriaId,
             CategoriaNombre: categoria.categoriaNombre,
           }));
-          this.dataSource.data = this.categorias;
+          this.applyFilter();
         } else {
           this.errorMessage = 'No se encontraron categorías.';
         }
@@ -75,10 +97,6 @@ export class CategoriaComponent implements OnInit {
     );
   }
 
-  filterCategorias(): void {
-    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
-  }
-
   changePage(event: PageEvent): void {
     console.log(
       'Página cambiada:',
@@ -87,7 +105,7 @@ export class CategoriaComponent implements OnInit {
       event.pageSize
     );
   }
-  // Método para editar categoría
+
   editCategoria(categoria: Categoria): void {
     Swal.fire({
       title: 'Editar categoría',
@@ -106,7 +124,6 @@ export class CategoriaComponent implements OnInit {
       if (result.isConfirmed) {
         categoria.CategoriaNombre = result.value;
 
-        // Llamar al servicio para editar la categoría
         this.categoriaService
           .editarCategoria(categoria.CategoriaId, categoria)
           .subscribe(
@@ -129,7 +146,6 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Método para eliminar categoría
   deleteCategoria(categoria: Categoria): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -140,22 +156,29 @@ export class CategoriaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        // Llamar al servicio para eliminar la categoría
-        this.categoriaService.eliminarCategoria(categoria.CategoriaId).subscribe(
-          (response) => {
-            Swal.fire('Eliminado', 'La categoría ha sido eliminada', 'success');
-          },
-          (error) => {
-            // Aquí estamos capturando el mensaje del error que viene del backend
-            if (error.error && error.error.message) {
-              Swal.fire('Error', error.error.message, 'error');
-            } else {
-              Swal.fire('Error', 'Hubo un problema al eliminar la categoría', 'error');
+        this.categoriaService
+          .eliminarCategoria(categoria.CategoriaId)
+          .subscribe(
+            (response) => {
+              Swal.fire(
+                'Eliminado',
+                'La categoría ha sido eliminada',
+                'success'
+              );
+            },
+            (error) => {
+              if (error.error && error.error.message) {
+                Swal.fire('Error', error.error.message, 'error');
+              } else {
+                Swal.fire(
+                  'Error',
+                  'Hubo un problema al eliminar la categoría',
+                  'error'
+                );
+              }
             }
-          }
-        );
+          );
       }
     });
   }
-  
 }
