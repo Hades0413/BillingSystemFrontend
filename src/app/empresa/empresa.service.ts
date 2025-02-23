@@ -15,4 +15,9 @@ export class EmpresaService {
   registerEmpresa(empresa: Empresa): Observable<any> {
     return this.http.post(`${this.empresaApiUrl}/registrar`, empresa);
   }
+
+  listarPorRuc(ruc: string): Observable<Empresa[]> {
+    return this.http.get<Empresa[]>(`${this.empresaApiUrl}/listar-por-ruc/${ruc}`);
+  }
+
 }

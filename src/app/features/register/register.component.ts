@@ -34,6 +34,10 @@ import Swal from 'sweetalert2';
 })
 export class DashboardRegisterComponent {
   currentStep = 1;
+  isSubmitting = false;
+  errorMessage: string | null = null;
+  rubros: Rubro[] = [];
+  empresaTieneRuc = true;
 
   user: User = {
     UsuarioId: 0,
@@ -57,11 +61,6 @@ export class DashboardRegisterComponent {
     EmpresaInformacionAdicional: '',
   };
 
-  rubros: Rubro[] = [];
-  empresaTieneRuc: boolean = true;
-  isSubmitting = false;
-  errorMessage: string | null = null;
-
   constructor(
     private authService: AuthService,
     private empresaService: EmpresaService,
@@ -70,6 +69,10 @@ export class DashboardRegisterComponent {
   ) {}
 
   ngOnInit() {
+    this.loadRubros();
+  }
+
+  loadRubros() {
     this.rubroService.getRubros().subscribe(
       (rubros: any[]) => {
         this.rubros = rubros.map((rubro) => ({
@@ -85,10 +88,10 @@ export class DashboardRegisterComponent {
   }
 
   nextStep() {
-    if (this.currentStep === 1) {
+    if (this.currentStep === 1 && this.validateUserData()) {
       this.currentStep++;
-    } else if (this.currentStep === 2) {
-      this.register();
+    } else if (this.currentStep === 2 && this.validateEmpresaData()) {
+      this.validateEmpresaAndRegister();
     }
   }
 
@@ -98,43 +101,86 @@ export class DashboardRegisterComponent {
     }
   }
 
-  register() {
+  validateUserData(): boolean {
+    if (
+      !this.user.UsuarioCorreo ||
+      !this.user.UsuarioContrasena ||
+      !this.user.UsuarioNombres ||
+      !this.user.UsuarioApellidos
+    ) {
+      Swal.fire(
+        'Error',
+        'Todos los campos del usuario son obligatorios.',
+        'error'
+      );
+      return false;
+    }
+    return true;
+  }
+
+  validateEmpresaData(): boolean {
+    if (
+      !this.empresa.EmpresaRuc ||
+      !this.empresa.EmpresaRazonSocial ||
+      !this.empresa.EmpresaNombreComercial
+    ) {
+      Swal.fire(
+        'Error',
+        'Todos los campos de la empresa son obligatorios.',
+        'error'
+      );
+      return false;
+    }
+    return true;
+  }
+
+  validateEmpresaAndRegister() {
     this.isSubmitting = true;
     this.errorMessage = null;
 
+    this.empresaService.listarPorRuc(this.empresa.EmpresaRuc).subscribe(
+      (empresas: Empresa[]) => {
+        if (empresas.length > 0) {
+          Swal.fire('Error', 'Ya existe una empresa con este RUC.', 'error');
+          this.isSubmitting = false;
+        } else {
+          this.registerUser();
+        }
+      },
+      (error: any) => {
+        if (error.status === 404) {
+          this.registerUser();
+        } else {
+          this.isSubmitting = false;
+          Swal.fire('Error', 'Hubo un problema al verificar el RUC.', 'error');
+        }
+      }
+    );
+  }
+
+  registerUser() {
     this.authService.registerUser(this.user).subscribe(
       (userResponse: any) => {
-        console.log('Respuesta del registro de usuario:', userResponse);
-
         this.empresa.UsuarioId = userResponse.data.usuarioId;
-        console.log('Datos de la empresa con UsuarioId asignado:', this.empresa);
-
-        this.empresaService.registerEmpresa(this.empresa).subscribe(
-          (empresaResponse: any) => {
-            console.log('Respuesta del registro de empresa:', empresaResponse);
-            Swal.fire('Éxito', 'Empresa registrada con éxito', 'success');
-            this.router.navigate(['/login']);
-            this.isSubmitting = false;
-          },
-          (error: any) => {
-            this.isSubmitting = false;
-            if (error?.error?.message === 'Ya existe una empresa con este RUC.') {
-              Swal.fire('Error', 'Ya existe una empresa con este RUC. Por favor, verifique el RUC e intente nuevamente.', 'error');
-            } else {
-              Swal.fire('Error', 'Error al registrar empresa. Intente nuevamente.', 'error');
-            }
-            console.error('Error al registrar empresa:', error);
-          }
-        );
+        this.registerEmpresa();
       },
       (error: any) => {
         this.isSubmitting = false;
-        if (error?.error?.message === 'Ya existe un usuario con este correo.') {
-          Swal.fire('Error', 'Ya existe un usuario con este correo. Por favor, utilice otro correo electrónico.', 'error');
-        } else {
-          Swal.fire('Error', 'Error al registrar usuario. Intente nuevamente.', 'error');
-        }
-        console.error('Error al registrar usuario:', error);
+        Swal.fire('Error', 'Error al registrar usuario.', 'error');
+      }
+    );
+  }
+
+  registerEmpresa() {
+    this.empresaService.registerEmpresa(this.empresa).subscribe(
+      () => {
+        Swal.fire('Éxito', 'Empresa registrada con éxito', 'success');
+        this.router.navigate(['/login']);
+        this.isSubmitting = false;
+      },
+      (error: any) => {
+        this.isSubmitting = false;
+        Swal.fire('Error', 'Error al registrar empresa.', 'error');
       }
     );
   }
