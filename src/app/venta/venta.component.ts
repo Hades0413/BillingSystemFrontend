@@ -6,14 +6,14 @@ import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { PageEvent } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-venta',
@@ -31,6 +31,8 @@ import { PageEvent } from '@angular/material/paginator';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSortModule,
+    FormsModule,
   ],
 })
 export class VentaComponent implements OnInit {
@@ -39,7 +41,19 @@ export class VentaComponent implements OnInit {
   clienteMap: { [key: number]: string } = {};
   usuarioId: number = 0;
 
-  // Añadimos más columnas para mostrar toda la información relevante
+  // Nuevas propiedades agregadas
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  activeFilter: string = '';
+  searchTerm: string = '';
+  filterCodigo: string = '';
+  filterPago: string = '';
+  filterRuc: string = '';
+  totalItems: number = 0;
+  itemsPerPage: number = 10;
+  currentPage: number = 0;
+  paginatedVentas: any[] = [];
+
   displayedColumns: string[] = [
     'VentaCodigo',
     'VentaFecha',
@@ -70,6 +84,7 @@ export class VentaComponent implements OnInit {
     }
   }
 
+  // Métodos existentes sin modificaciones
   listarVentasPorUsuario(usuarioId: number): void {
     this.ventaService.getVentasPorUsuario(usuarioId).subscribe(
       (response) => {
@@ -88,6 +103,8 @@ export class VentaComponent implements OnInit {
             EmpresaId: venta.empresaId,
             ClienteId: venta.clienteId,
           }));
+
+          this.paginateSales(); // Nueva línea agregada
 
           this.clienteService.getClientes().subscribe(
             (clientes) => {
@@ -120,5 +137,61 @@ export class VentaComponent implements OnInit {
 
   obtenerClienteNombreLegal(clienteId: number): string {
     return this.clienteMap[clienteId] || 'Cliente no encontrado';
+  }
+
+  // Nuevos métodos agregados
+  toggleFilter(filterType: string): void {
+    this.activeFilter = this.activeFilter === filterType ? '' : filterType;
+    this.paginateSales();
+  }
+  paginateSales(): void {
+    let filteredData = [...this.ventas];
+
+    // Filtro general - CORREGIDO
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filteredData = filteredData.filter(
+        (venta) =>
+          Object.values(venta).some((value) =>
+            String(value).toLowerCase().includes(term)
+          ) // Se añadió este paréntesis faltante
+      );
+    }
+
+    // Filtros individuales
+    if (this.filterCodigo) {
+      filteredData = filteredData.filter((venta) =>
+        venta.VentaCodigo.toLowerCase().includes(
+          this.filterCodigo.toLowerCase()
+        )
+      );
+    }
+
+    if (this.filterPago) {
+      filteredData = filteredData.filter((venta) =>
+        venta.VentaFormaPago.toLowerCase().includes(
+          this.filterPago.toLowerCase()
+        )
+      );
+    }
+
+    if (this.filterRuc) {
+      filteredData = filteredData.filter((venta) =>
+        venta.VentaRucCliente.toString().includes(this.filterRuc)
+      );
+    }
+
+    this.totalItems = filteredData.length;
+    const startIndex = this.currentPage * this.itemsPerPage;
+    this.paginatedVentas = filteredData.slice(
+      startIndex,
+      startIndex + this.itemsPerPage
+    );
+  }
+
+  changePage(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
+    this.paginateSales();
   }
 }
