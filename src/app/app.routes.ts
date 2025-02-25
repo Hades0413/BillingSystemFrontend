@@ -6,6 +6,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { DashboardPrducto } from './features/productos/producto.component';
 import { CategoriaComponent } from './categoria/categoria.component';
 import { DashboardRegisterComponent } from './features/register/register.component';
+import { VentaComponent } from './venta/venta.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +19,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'productos', component: DashboardPrducto },
-      { path: 'categorias', component: CategoriaComponent },/*
+      { path: 'ventas', component: VentaComponent },/*
       { path: 'ventas', component: VentasComponent },*/
     ],
   },

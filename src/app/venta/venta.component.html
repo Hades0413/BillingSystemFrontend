@@ -1,0 +1,29 @@
+<div class="ventas-lista">
+  <h2>Ventas por Usuario</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Venta ID</th>
+        <th>Código de Venta</th>
+        <th>Fecha</th>
+        <th>Monto Total</th>
+        <th>Monto Descuento</th>
+        <th>Monto Impuesto</th>
+        <th>Forma de Pago</th>
+        <th>RUC Cliente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let venta of ventas">
+        <td>{{ venta.VentaId }}</td>
+        <td>{{ venta.VentaCodigo }}</td>
+        <td>{{ venta.VentaFecha | date : "dd/MM/yyyy" }}</td>
+        <td>{{ venta.VentaMontoTotal | currency }}</td>
+        <td>{{ venta.VentaMontoDescuento | currency }}</td>
+        <td>{{ venta.VentaMontoImpuesto | currency }}</td>
+        <td>{{ venta.VentaFormaPago }}</td>
+        <td>{{ venta.VentaRucCliente }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
