@@ -15,17 +15,69 @@
 
   <div *ngIf="!isLoading && !errorMessage">
     <mat-table [dataSource]="paginatedVentas" matSort>
+      <ng-container matColumnDef="VentaVenta">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          (click)="toggleFilter('VentaVenta')"
+          [class.filter-active]="activeFilter === 'VentaVenta'"
+        >
+          <div class="filter-header">
+            <span>Venta</span>
+            <div
+              class="filter-input-container"
+              *ngIf="activeFilter === 'codigo'"
+            >
+              <input
+                matInput
+                [(ngModel)]="filterCodigo"
+                (input)="paginateSales()"
+                (click)="$event.stopPropagation()"
+                placeholder="Filtrar"
+              />
+            </div>
+          </div>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let venta">{{ venta.VentaVenta }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ClienteNombreLegal">
+        <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
+        <mat-cell *matCellDef="let venta">{{
+          obtenerClienteNombreLegal(venta.ClienteId)
+        }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="VentaMontoTotal">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Total</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">S/.{{
+          venta.VentaMontoTotal
+        }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="VentaFecha">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
+        <mat-cell *matCellDef="let venta">
+          {{ venta.VentaFecha | date : "dd MMM. yyyy" }}
+        </mat-cell>
+      </ng-container>
+      
       <!-- VentaCodigo -->
       <ng-container matColumnDef="VentaCodigo">
-        <mat-header-cell 
-          *matHeaderCellDef 
+        <mat-header-cell
+          *matHeaderCellDef
           mat-sort-header
           (click)="toggleFilter('codigo')"
           [class.filter-active]="activeFilter === 'codigo'"
         >
           <div class="filter-header">
             <span>Código</span>
-            <div class="filter-input-container" *ngIf="activeFilter === 'codigo'">
+            <div
+              class="filter-input-container"
+              *ngIf="activeFilter === 'codigo'"
+            >
               <input
                 matInput
                 [(ngModel)]="filterCodigo"
@@ -41,8 +93,8 @@
 
       <!-- VentaFormaPago -->
       <ng-container matColumnDef="VentaFormaPago">
-        <mat-header-cell 
-          *matHeaderCellDef 
+        <mat-header-cell
+          *matHeaderCellDef
           mat-sort-header
           (click)="toggleFilter('pago')"
           [class.filter-active]="activeFilter === 'pago'"
@@ -65,8 +117,8 @@
 
       <!-- VentaRucCliente -->
       <ng-container matColumnDef="VentaRucCliente">
-        <mat-header-cell 
-          *matHeaderCellDef 
+        <mat-header-cell
+          *matHeaderCellDef
           mat-sort-header
           (click)="toggleFilter('ruc')"
           [class.filter-active]="activeFilter === 'ruc'"
@@ -88,29 +140,31 @@
       </ng-container>
 
       <!-- Resto de columnas (sin filtros) -->
-      <ng-container matColumnDef="VentaFecha">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaFecha | date:'dd/MM/yyyy' }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="VentaMontoTotal">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaMontoTotal | currency }}</mat-cell>
-      </ng-container>
+      
 
       <ng-container matColumnDef="VentaMontoDescuento">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Descuento</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaMontoDescuento | currency }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Descuento</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">{{
+          venta.VentaMontoDescuento | currency
+        }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="VentaMontoImpuesto">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Impuesto</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaMontoImpuesto | currency }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Impuesto</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">{{
+          venta.VentaMontoImpuesto | currency
+        }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="TipoComprobanteId">
         <mat-header-cell *matHeaderCellDef>Tipo Comprobante</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.TipoComprobanteId }}</mat-cell>
+        <mat-cell *matCellDef="let venta">{{
+          venta.TipoComprobanteId
+        }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="UsuarioId">
@@ -123,13 +177,17 @@
         <mat-cell *matCellDef="let venta">{{ venta.EmpresaId }}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="ClienteNombreLegal">
-        <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ obtenerClienteNombreLegal(venta.ClienteId) }}</mat-cell>
+      <ng-container matColumnDef="Acciones">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let venta">
+          <button mat-icon-button (click)="verDetalles(venta)">
+            <mat-icon>verDetalles</mat-icon>
+          </button>
+        </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
     <mat-paginator

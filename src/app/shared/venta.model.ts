@@ -1,5 +1,6 @@
 export interface Venta {
     VentaId: number;
+    VentaVenta: string;
     VentaCodigo: string;
     VentaFecha: Date;
     VentaMontoTotal: number;

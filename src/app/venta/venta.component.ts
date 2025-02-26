@@ -53,19 +53,15 @@ export class VentaComponent implements OnInit {
   itemsPerPage: number = 10;
   currentPage: number = 0;
   paginatedVentas: any[] = [];
-
+  
   displayedColumns: string[] = [
-    'VentaCodigo',
-    'VentaFecha',
-    'VentaMontoTotal',
-    'VentaMontoDescuento',
-    'VentaMontoImpuesto',
-    'VentaFormaPago',
-    'VentaRucCliente',
-    'TipoComprobanteId',
-    'UsuarioId',
-    'EmpresaId',
+    'VentaVenta',
     'ClienteNombreLegal',
+    'VentaMontoTotal',
+    'VentaFecha',
+    'VentaCodigo',
+    'UsuarioId',
+    'Acciones',
   ];
 
   constructor(
@@ -91,6 +87,7 @@ export class VentaComponent implements OnInit {
         if (Array.isArray(response)) {
           this.ventas = response.map((venta: any) => ({
             VentaId: venta.ventaId,
+            VentaVenta: venta.ventaVenta,
             VentaCodigo: venta.ventaCodigo,
             VentaFecha: venta.ventaFecha,
             VentaMontoTotal: venta.ventaMontoTotal,
@@ -194,4 +191,12 @@ export class VentaComponent implements OnInit {
     this.itemsPerPage = event.pageSize;
     this.paginateSales();
   }
+
+  
+  verDetalles(venta: Venta): void {
+    alert(
+      `Detalles de la venta:\nCódigo: ${venta.VentaCodigo}\nFecha: ${venta.VentaFecha}\nMonto Total: ${venta.VentaMontoTotal}`
+    );
+  }
+
 }

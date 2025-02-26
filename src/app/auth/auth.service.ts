@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { User } from '../shared/user.model';
@@ -13,6 +13,7 @@ export class AuthService {
   private authApiUrl = environment.authApiUrl;
 
   constructor(private http: HttpClient) {}
+  
 
   registerUser(user: User): Observable<any> {
     return this.http.post(`${this.registerApiUrl}/registrar`, user);
@@ -48,6 +49,17 @@ export class AuthService {
         }
       })
     );
+  }
+
+  listarUsuarios(): Observable<User[]> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<User[]>(`${this.registerApiUrl}/listar`, { headers });
   }
 
   getUsuarioId(correo: string): Observable<any> {
