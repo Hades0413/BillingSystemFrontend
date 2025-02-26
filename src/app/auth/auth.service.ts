@@ -51,7 +51,7 @@ export class AuthService {
     );
   }
 
-  listarUsuarios(): Observable<User[]> {
+  listarUsuarios(): Observable<any> {
     const token = this.getToken();
     if (!token) {
       throw new Error('No se encontró el token de autenticación.');
@@ -59,7 +59,7 @@ export class AuthService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<User[]>(`${this.registerApiUrl}/listar`, { headers });
+    return this.http.get<any>(`${this.registerApiUrl}/listar`, { headers });
   }
 
   getUsuarioId(correo: string): Observable<any> {

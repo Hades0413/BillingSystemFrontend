@@ -38,7 +38,9 @@ import { FormsModule } from '@angular/forms';
 export class VentaComponent implements OnInit {
   ventas: Venta[] = [];
   clientes: any[] = [];
+  usuarios: any[] = []; // Nuevo arreglo para usuarios
   clienteMap: { [key: number]: string } = {};
+  usuarioMap: { [key: number]: string } = {}; // Mapeo de usuarios
   usuarioId: number = 0;
 
   // Nuevas propiedades agregadas
@@ -53,14 +55,14 @@ export class VentaComponent implements OnInit {
   itemsPerPage: number = 10;
   currentPage: number = 0;
   paginatedVentas: any[] = [];
-  
+
   displayedColumns: string[] = [
     'VentaVenta',
     'ClienteNombreLegal',
     'VentaMontoTotal',
     'VentaFecha',
     'VentaCodigo',
-    'UsuarioId',
+    'UsuarioNombre', // Cambié UsuarioId por UsuarioNombre
     'Acciones',
   ];
 
@@ -75,8 +77,6 @@ export class VentaComponent implements OnInit {
     if (storedUsuarioId) {
       this.usuarioId = parseInt(storedUsuarioId, 10);
       this.listarVentasPorUsuario(this.usuarioId);
-    } else {
-      console.error('Usuario no autenticado.');
     }
   }
 
@@ -103,21 +103,38 @@ export class VentaComponent implements OnInit {
 
           this.paginateSales(); // Nueva línea agregada
 
+          // Obtener clientes
           this.clienteService.getClientes().subscribe(
             (clientes) => {
               this.clientes = clientes;
               this.crearClienteMap();
             },
             (error) => {
-              console.error('Error al obtener clientes:', error);
+              this.errorMessage = 'Error al obtener clientes';
+            }
+          );
+
+          // Aquí agregamos el servicio para obtener los usuarios (debe ser implementado en el AuthService)
+          this.authService.listarUsuarios().subscribe(
+            (response) => {
+              if (response && Array.isArray(response.data)) {
+                this.usuarios = response.data; // Accedemos a "data" para obtener los usuarios
+                this.crearUsuarioMap();
+              } else {
+                this.errorMessage =
+                  'La respuesta de usuarios no contiene datos válidos';
+              }
+            },
+            (error) => {
+              this.errorMessage = 'Error al obtener usuarios';
             }
           );
         } else {
-          console.error('La respuesta no es un array');
+          this.errorMessage = 'La respuesta no es un array';
         }
       },
       (error) => {
-        console.error('Error al obtener ventas:', error);
+        this.errorMessage = 'Error al obtener ventas';
       }
     );
   }
@@ -126,8 +143,16 @@ export class VentaComponent implements OnInit {
     this.clientes.forEach((cliente) => {
       if (cliente && cliente.clienteId !== undefined) {
         this.clienteMap[cliente.clienteId] = cliente.clienteNombreLegal;
-      } else {
-        console.warn('Cliente sin clienteId:', cliente);
+      }
+    });
+  }
+
+  crearUsuarioMap(): void {
+    this.usuarios.forEach((usuario) => {
+      if (usuario && usuario.usuarioId !== undefined) {
+        this.usuarioMap[
+          usuario.usuarioId
+        ] = `${usuario.usuarioNombres} ${usuario.usuarioApellidos}`;
       }
     });
   }
@@ -136,11 +161,16 @@ export class VentaComponent implements OnInit {
     return this.clienteMap[clienteId] || 'Cliente no encontrado';
   }
 
+  obtenerUsuarioNombre(usuarioId: number): string {
+    return this.usuarioMap[usuarioId] || 'Usuario no encontrado'; // Mostramos el nombre completo del usuario
+  }
+
   // Nuevos métodos agregados
   toggleFilter(filterType: string): void {
     this.activeFilter = this.activeFilter === filterType ? '' : filterType;
     this.paginateSales();
   }
+
   paginateSales(): void {
     let filteredData = [...this.ventas];
 
@@ -192,11 +222,9 @@ export class VentaComponent implements OnInit {
     this.paginateSales();
   }
 
-  
   verDetalles(venta: Venta): void {
     alert(
       `Detalles de la venta:\nCódigo: ${venta.VentaCodigo}\nFecha: ${venta.VentaFecha}\nMonto Total: ${venta.VentaMontoTotal}`
     );
   }
-
 }

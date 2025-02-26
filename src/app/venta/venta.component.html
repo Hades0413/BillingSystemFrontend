@@ -52,18 +52,27 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header
           >Total</mat-header-cell
         >
-        <mat-cell *matCellDef="let venta">S/.{{
-          venta.VentaMontoTotal
+        <mat-cell *matCellDef="let venta"
+          >S/.{{ venta.VentaMontoTotal }}</mat-cell
+        >
+      </ng-container>
+
+      <ng-container matColumnDef="UsuarioNombre">
+        <mat-header-cell *matHeaderCellDef>Usuario</mat-header-cell>
+        <mat-cell *matCellDef="let venta">{{
+          obtenerUsuarioNombre(venta.UsuarioId)
         }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="VentaFecha">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Fecha</mat-header-cell
+        >
         <mat-cell *matCellDef="let venta">
           {{ venta.VentaFecha | date : "dd MMM. yyyy" }}
         </mat-cell>
       </ng-container>
-      
+
       <!-- VentaCodigo -->
       <ng-container matColumnDef="VentaCodigo">
         <mat-header-cell
@@ -140,7 +149,6 @@
       </ng-container>
 
       <!-- Resto de columnas (sin filtros) -->
-      
 
       <ng-container matColumnDef="VentaMontoDescuento">
         <mat-header-cell *matHeaderCellDef mat-sort-header
@@ -165,11 +173,6 @@
         <mat-cell *matCellDef="let venta">{{
           venta.TipoComprobanteId
         }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="UsuarioId">
-        <mat-header-cell *matHeaderCellDef>Usuario ID</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.UsuarioId }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="EmpresaId">
