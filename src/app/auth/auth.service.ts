@@ -13,10 +13,18 @@ export class AuthService {
   private authApiUrl = environment.authApiUrl;
 
   constructor(private http: HttpClient) {}
-  
 
   registerUser(user: User): Observable<any> {
-    return this.http.post(`${this.registerApiUrl}/registrar`, user);
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post(`${this.registerApiUrl}/registrar`, user, {
+      headers,
+    });
   }
 
   login(usuarioCorreo: string, usuarioContrasena: string): Observable<any> {
@@ -63,7 +71,16 @@ export class AuthService {
   }
 
   getUsuarioId(correo: string): Observable<any> {
-    return this.http.get(`${this.registerApiUrl}/correo/${correo}`);
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get(`${this.registerApiUrl}/correo/${correo}`, {
+      headers,
+    });
   }
 
   isAuthenticated(): boolean {

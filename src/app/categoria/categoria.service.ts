@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Categoria } from '../shared/categoria.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,13 +11,23 @@ import { Categoria } from '../shared/categoria.model';
 export class CategoriaService {
   private categoriaApiUrl = environment.categoriaApiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
 
   getCategoriasPorUsuario(): Observable<Categoria[]> {
     const usuarioId = parseInt(localStorage.getItem('UsuarioId')!, 10);
     if (usuarioId) {
+      const headers = this.getAuthHeaders();
       return this.http.get<Categoria[]>(
-        `${this.categoriaApiUrl}/listar?usuarioId=${usuarioId}`
+        `${this.categoriaApiUrl}/listar?usuarioId=${usuarioId}`,
+        { headers }
       );
     } else {
       throw new Error('Usuario no autenticado');
@@ -30,25 +41,34 @@ export class CategoriaService {
         ...categoria,
         UsuarioId: parseInt(usuarioId, 10),
       };
+      const headers = this.getAuthHeaders();
       return this.http.post(
         `${this.categoriaApiUrl}/registrar`,
-        categoriaConUsuarioId
+        categoriaConUsuarioId,
+        { headers }
       );
     } else {
       throw new Error('Usuario no autenticado');
     }
   }
 
-  // Método para editar una categoría
   editarCategoria(categoriaId: number, categoria: Categoria): Observable<any> {
-    return this.http.put(`${this.categoriaApiUrl}/editar/${categoriaId}`, {
-      CategoriaNombre: categoria.CategoriaNombre,
-      CategoriaInformacionAdicional: categoria.CategoriaInformacionAdicional,
-    });
+    const headers = this.getAuthHeaders();
+    return this.http.put(
+      `${this.categoriaApiUrl}/editar/${categoriaId}`,
+      {
+        CategoriaNombre: categoria.CategoriaNombre,
+        CategoriaInformacionAdicional: categoria.CategoriaInformacionAdicional,
+      },
+      { headers }
+    );
   }
 
-  // Método para eliminar una categoría
   eliminarCategoria(categoriaId: number): Observable<any> {
-    return this.http.delete(`${this.categoriaApiUrl}/eliminar/${categoriaId}`);
+    const headers = this.getAuthHeaders();
+    return this.http.delete(
+      `${this.categoriaApiUrl}/eliminar/${categoriaId}`,
+      { headers }
+    );
   }
 }
