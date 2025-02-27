@@ -1,4 +1,4 @@
-<div class="container mt-5 ventas">
+<div class="container mt-5 venta">
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
   <mat-card *ngIf="errorMessage" class="error-card">
@@ -57,13 +57,6 @@
         >
       </ng-container>
 
-      <ng-container matColumnDef="UsuarioNombre">
-        <mat-header-cell *matHeaderCellDef>Usuario</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{
-          obtenerUsuarioNombre(venta.UsuarioId)
-        }}</mat-cell>
-      </ng-container>
-
       <ng-container matColumnDef="VentaFecha">
         <mat-header-cell *matHeaderCellDef mat-sort-header
           >Fecha</mat-header-cell
@@ -73,7 +66,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- VentaCodigo -->
       <ng-container matColumnDef="VentaCodigo">
         <mat-header-cell
           *matHeaderCellDef
@@ -100,91 +92,18 @@
         <mat-cell *matCellDef="let venta">{{ venta.VentaCodigo }}</mat-cell>
       </ng-container>
 
-      <!-- VentaFormaPago -->
-      <ng-container matColumnDef="VentaFormaPago">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          (click)="toggleFilter('pago')"
-          [class.filter-active]="activeFilter === 'pago'"
-        >
-          <div class="filter-header">
-            <span>Forma Pago</span>
-            <div class="filter-input-container" *ngIf="activeFilter === 'pago'">
-              <input
-                matInput
-                [(ngModel)]="filterPago"
-                (input)="paginateSales()"
-                (click)="$event.stopPropagation()"
-                placeholder="Filtrar"
-              />
-            </div>
-          </div>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaFormaPago }}</mat-cell>
-      </ng-container>
-
-      <!-- VentaRucCliente -->
-      <ng-container matColumnDef="VentaRucCliente">
-        <mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          (click)="toggleFilter('ruc')"
-          [class.filter-active]="activeFilter === 'ruc'"
-        >
-          <div class="filter-header">
-            <span>RUC</span>
-            <div class="filter-input-container" *ngIf="activeFilter === 'ruc'">
-              <input
-                matInput
-                [(ngModel)]="filterRuc"
-                (input)="paginateSales()"
-                (click)="$event.stopPropagation()"
-                placeholder="Filtrar"
-              />
-            </div>
-          </div>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.VentaRucCliente }}</mat-cell>
-      </ng-container>
-
-      <!-- Resto de columnas (sin filtros) -->
-
-      <ng-container matColumnDef="VentaMontoDescuento">
-        <mat-header-cell *matHeaderCellDef mat-sort-header
-          >Descuento</mat-header-cell
-        >
+      <ng-container matColumnDef="UsuarioNombre">
+        <mat-header-cell *matHeaderCellDef>Usuario</mat-header-cell>
         <mat-cell *matCellDef="let venta">{{
-          venta.VentaMontoDescuento | currency
+          obtenerUsuarioNombre(venta.UsuarioId)
         }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="VentaMontoImpuesto">
-        <mat-header-cell *matHeaderCellDef mat-sort-header
-          >Impuesto</mat-header-cell
-        >
-        <mat-cell *matCellDef="let venta">{{
-          venta.VentaMontoImpuesto | currency
-        }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="TipoComprobanteId">
-        <mat-header-cell *matHeaderCellDef>Tipo Comprobante</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{
-          venta.TipoComprobanteId
-        }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="EmpresaId">
-        <mat-header-cell *matHeaderCellDef>Empresa ID</mat-header-cell>
-        <mat-cell *matCellDef="let venta">{{ venta.EmpresaId }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="Acciones">
         <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
         <mat-cell *matCellDef="let venta">
           <button mat-icon-button (click)="verDetalles(venta)">
-            <mat-icon>verDetalles</mat-icon>
+            <mat-icon>visibility</mat-icon>
           </button>
         </mat-cell>
       </ng-container>

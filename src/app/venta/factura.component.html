@@ -1,0 +1,78 @@
+<div class="container mt-5 factura">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <mat-card *ngIf="errorMessage" class="error-card">
+    <mat-card-content>{{ errorMessage }}</mat-card-content>
+  </mat-card>
+
+  <div class="mb-3 d-flex justify-content-between align-items-center">
+    <mat-form-field appearance="outline" class="w-50">
+      <mat-label>Buscar Facturas</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="paginateSales()" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage">
+    <mat-table [dataSource]="paginatedFacturas" matSort>
+      <ng-container matColumnDef="VentaCodigo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Venta Código</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">{{ venta.VentaCodigo }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="TipoComprobanteNombre">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Tipo Comprobante</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">
+          {{ obtenerTipoComprobante(venta.TipoComprobanteId) }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="VentaFecha">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Fecha</mat-header-cell
+        >
+        <mat-cell *matCellDef="let venta">{{
+          venta.VentaFecha | date : "dd MMM. yyyy"
+        }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ClienteNombreLegal">
+        <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
+        <mat-cell *matCellDef="let venta">{{
+          obtenerClienteNombreLegal(venta.ClienteId)
+        }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="VentaMontoTotal">
+        <mat-header-cell *matHeaderCellDef>Precio Total</mat-header-cell>
+        <mat-cell *matCellDef="let venta">{{
+          venta.VentaMontoTotal | currency : "S/. "
+        }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Acciones">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let venta">
+          <button mat-icon-button (click)="verDetalles(venta)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </div>
+</div>
