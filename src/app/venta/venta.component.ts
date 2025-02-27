@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { VentaDetalleComponent } from './venta-detalle.component';
+import { EmpresaService } from '../empresa/empresa.service';
 
 @Component({
   selector: 'app-venta',
@@ -36,14 +37,17 @@ import { VentaDetalleComponent } from './venta-detalle.component';
     MatSortModule,
     FormsModule,
     MatDialogModule,
+    VentaDetalleComponent,
   ],
 })
 export class VentaComponent implements OnInit {
   ventas: Venta[] = [];
   clientes: any[] = [];
   usuarios: any[] = [];
+  empresas: any[] = [];
   clienteMap: { [key: number]: string } = {};
   usuarioMap: { [key: number]: string } = {};
+  empresaMap: { [key: number]: string } = {};
   usuarioId: number = 0;
 
   isLoading: boolean = false;
@@ -71,6 +75,7 @@ export class VentaComponent implements OnInit {
   constructor(
     private ventaService: VentaService,
     private clienteService: ClienteService,
+    private empresaService: EmpresaService,
     private authService: AuthService,
     public dialog: MatDialog
   ) {}
@@ -129,6 +134,16 @@ export class VentaComponent implements OnInit {
               this.errorMessage = 'Error al obtener usuarios';
             }
           );
+
+          this.empresaService.listarEmpresas().subscribe(
+            (empresas) => {
+              this.empresas = empresas;
+              this.crearEmpresaMap();
+            },
+            (error) => {
+              this.errorMessage = 'Error al obtener empresas';
+            }
+          );
         } else {
           this.errorMessage = 'La respuesta no es un array';
         }
@@ -157,12 +172,24 @@ export class VentaComponent implements OnInit {
     });
   }
 
+  crearEmpresaMap(): void {
+    this.empresas.forEach((empresa) => {
+      if (empresa && empresa.empresaId !== undefined) {
+        this.empresaMap[empresa.empresaId] = empresa.empresaNombreComercial;
+      }
+    });
+  }
+
   obtenerClienteNombreLegal(clienteId: number): string {
     return this.clienteMap[clienteId] || 'Cliente no encontrado';
   }
 
   obtenerUsuarioNombre(usuarioId: number): string {
     return this.usuarioMap[usuarioId] || 'Usuario no encontrado';
+  }
+
+  obtenerEmpresaNombreComercial(empresaId: number): string {
+    return this.empresaMap[empresaId] || 'Empresa no encontrada';
   }
 
   toggleFilter(filterType: string): void {
@@ -219,9 +246,9 @@ export class VentaComponent implements OnInit {
   }
 
   verDetallesVenta(venta: Venta): void {
-    
     const clienteNombre = this.obtenerClienteNombreLegal(venta.ClienteId);
     const usuarioNombres = this.obtenerUsuarioNombre(venta.UsuarioId);
+    const empresaNombre = this.obtenerEmpresaNombreComercial(venta.EmpresaId);
 
     const ventaDetalles = {
       VentaId: venta.VentaId,
@@ -235,6 +262,7 @@ export class VentaComponent implements OnInit {
       EmpresaId: venta.EmpresaId,
       ClienteNombre: clienteNombre,
       UsuarioNombre: usuarioNombres,
+      EmpresaNombre: empresaNombre,
     };
 
     this.dialog.open(VentaDetalleComponent, {

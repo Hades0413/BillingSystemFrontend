@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CotizacionDetalleComponent } from './cotizacion-detalle.component';
+import { EmpresaService } from '../empresa/empresa.service';
 
 @Component({
   selector: 'app-cotizacion',
@@ -33,6 +34,7 @@ import { CotizacionDetalleComponent } from './cotizacion-detalle.component';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSortModule,
     FormsModule,
     MatDialogModule,
     CotizacionDetalleComponent,
@@ -42,8 +44,10 @@ export class CotizacionComponent implements OnInit {
   cotizaciones: Cotizacion[] = [];
   clientes: any[] = [];
   usuarios: any[] = [];
+  empresas: any[] = [];
   clienteMap: { [key: number]: string } = {};
   usuarioMap: { [key: number]: string } = {};
+  empresaMap: { [key: number]: string } = {};
   usuarioId: number = 0;
 
   isLoading: boolean = false;
@@ -52,6 +56,7 @@ export class CotizacionComponent implements OnInit {
   searchTerm: string = '';
   filterCodigo: string = '';
   filterCliente: string = '';
+  filterEmpresa: string = '';
   totalItems: number = 0;
   itemsPerPage: number = 10;
   currentPage: number = 0;
@@ -71,6 +76,7 @@ export class CotizacionComponent implements OnInit {
     private cotizacionService: CotizacionService,
     private clienteService: ClienteService,
     private authService: AuthService,
+    private empresaService: EmpresaService,
     public dialog: MatDialog
   ) {}
 
@@ -124,6 +130,16 @@ export class CotizacionComponent implements OnInit {
               this.errorMessage = 'Error al obtener usuarios';
             }
           );
+
+          this.empresaService.listarEmpresas().subscribe(
+            (empresas) => {
+              this.empresas = empresas;
+              this.crearEmpresaMap();
+            },
+            (error) => {
+              this.errorMessage = 'Error al obtener empresas';
+            }
+          );
         } else {
           this.errorMessage = 'La respuesta no es un array';
         }
@@ -152,12 +168,26 @@ export class CotizacionComponent implements OnInit {
     });
   }
 
+  // Crear el mapa de empresas
+  crearEmpresaMap(): void {
+    this.empresas.forEach((empresa) => {
+      if (empresa && empresa.empresaId !== undefined) {
+        this.empresaMap[empresa.empresaId] = empresa.empresaNombreComercial;
+      }
+    });
+  }
+
   obtenerClienteNombreLegal(clienteId: number): string {
     return this.clienteMap[clienteId] || 'Cliente no encontrado';
   }
 
   obtenerUsuarioNombre(usuarioId: number): string {
     return this.usuarioMap[usuarioId] || 'Usuario no encontrado';
+  }
+
+  // Obtener el nombre comercial de la empresa
+  obtenerEmpresaNombreComercial(empresaId: number): string {
+    return this.empresaMap[empresaId] || 'Empresa no encontrada';
   }
 
   toggleFilter(filterType: string): void {
@@ -191,6 +221,12 @@ export class CotizacionComponent implements OnInit {
       );
     }
 
+    if (this.filterEmpresa) {
+      filteredData = filteredData.filter((cotizacion) =>
+        cotizacion.EmpresaId.toString().includes(this.filterEmpresa)
+      );
+    }
+
     this.totalItems = filteredData.length;
     const startIndex = this.currentPage * this.itemsPerPage;
     this.paginatedCotizaciones = filteredData.slice(
@@ -205,12 +241,13 @@ export class CotizacionComponent implements OnInit {
     this.paginateCotizaciones();
   }
 
-
   verDetalles(cotizacion: Cotizacion): void {
-    
     const clienteNombre = this.obtenerClienteNombreLegal(cotizacion.ClienteId);
     const usuarioNombres = this.obtenerUsuarioNombre(cotizacion.UsuarioId);
-    
+    const empresaNombreComercial = this.obtenerEmpresaNombreComercial(
+      cotizacion.EmpresaId
+    );
+
     const cotizacionDetalles = {
       CotizacionId: cotizacion.CotizacionId,
       CotizacionCodigo: cotizacion.CotizacionCodigo,
@@ -221,15 +258,15 @@ export class CotizacionComponent implements OnInit {
       ClienteId: cotizacion.ClienteId,
       UsuarioId: cotizacion.UsuarioId,
       EmpresaId: cotizacion.EmpresaId,
-      ClienteNombre: clienteNombre, 
-      UsuarioNombre: usuarioNombres
+      ClienteNombre: clienteNombre,
+      UsuarioNombre: usuarioNombres,
+      EmpresaNombreComercial: empresaNombreComercial,
     };
-  
+
     // Abrimos el modal y le pasamos los datos
     this.dialog.open(CotizacionDetalleComponent, {
       data: cotizacionDetalles,
-      width: '8000px',
+      width: '800px',
     });
   }
-  
 }

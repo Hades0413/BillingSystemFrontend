@@ -1,64 +1,99 @@
-<div *ngIf="cotizaciones.length > 0">
-  <h2>Cotizaciones</h2>
-  <table mat-table [dataSource]="paginatedCotizaciones" matSort>
-    <ng-container matColumnDef="CotizacionCodigo">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ cotizacion.CotizacionCodigo }}
-      </td>
-    </ng-container>
+<div class="container mt-5 cotizacion">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
-    <ng-container matColumnDef="CotizacionFecha">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ cotizacion.CotizacionFecha | date : "dd/MM/yyyy" }}
-      </td>
-    </ng-container>
+  <mat-card *ngIf="errorMessage" class="error-card">
+    <mat-card-content>{{ errorMessage }}</mat-card-content>
+  </mat-card>
 
-    <ng-container matColumnDef="CotizacionMontoTotal">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto Total</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ cotizacion.CotizacionMontoTotal | currency }}
-      </td>
-    </ng-container>
+  <div class="mb-3 d-flex justify-content-between align-items-center">
+    <mat-form-field appearance="outline" class="w-50">
+      <mat-label>Buscar Cotizaciones</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="paginateCotizaciones()" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
 
-    <ng-container matColumnDef="CotizacionMontoDescuento">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Descuento</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ cotizacion.CotizacionMontoDescuento | currency }}
-      </td>
-    </ng-container>
+  <div *ngIf="!isLoading && !errorMessage">
+    <mat-table [dataSource]="paginatedCotizaciones" matSort>
 
-    <ng-container matColumnDef="CotizacionMontoImpuesto">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Impuesto</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ cotizacion.CotizacionMontoImpuesto | currency }}
-      </td>
-    </ng-container>
+      <!-- Código de la Cotización -->
+      <ng-container matColumnDef="CotizacionCodigo">
+        <mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          (click)="toggleFilter('CotizacionCodigo')"
+          [class.filter-active]="activeFilter === 'CotizacionCodigo'"
+        >
+          <div class="filter-header">
+            <span>Código</span>
+            <div class="filter-input-container" *ngIf="activeFilter === 'CotizacionCodigo'">
+              <input matInput [(ngModel)]="filterCodigo" (input)="paginateCotizaciones()" 
+                     (click)="$event.stopPropagation()" placeholder="Filtrar" />
+            </div>
+          </div>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">{{ cotizacion.CotizacionCodigo }}</mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="ClienteNombre">
-      <th mat-header-cell *matHeaderCellDef>Cliente</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        {{ obtenerClienteNombreLegal(cotizacion.ClienteId) }}
-      </td>
-    </ng-container>
+      <!-- Fecha -->
+      <ng-container matColumnDef="CotizacionFecha">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          {{ cotizacion.CotizacionFecha | date : "dd MMM. yyyy" }}
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Acciones">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
-      <td mat-cell *matCellDef="let cotizacion">
-        <button mat-button (click)="verDetalles(cotizacion)">
-          Ver detalles
-        </button>
-      </td>
-    </ng-container>
+      <!-- Monto Total -->
+      <ng-container matColumnDef="CotizacionMontoTotal">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          S/.{{ cotizacion.CotizacionMontoTotal | number : '1.2-2' }}
+        </mat-cell>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+      <!-- Descuento -->
+      <ng-container matColumnDef="CotizacionMontoDescuento">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Descuento</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          S/.{{ cotizacion.CotizacionMontoDescuento | number : '1.2-2' }}
+        </mat-cell>
+      </ng-container>
 
-  <mat-paginator
-    [length]="totalItems"
-    [pageSize]="itemsPerPage"
-    (page)="changePage($event)"
-  ></mat-paginator>
+      <!-- Impuesto -->
+      <ng-container matColumnDef="CotizacionMontoImpuesto">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Impuesto</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          S/.{{ cotizacion.CotizacionMontoImpuesto | number : '1.2-2' }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Cliente -->
+      <ng-container matColumnDef="ClienteNombre">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          {{ obtenerClienteNombreLegal(cotizacion.ClienteId) }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="Acciones">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let cotizacion">
+          <button mat-icon-button (click)="verDetalles(cotizacion)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="changePage($event)"
+    ></mat-paginator>
+  </div>
 </div>

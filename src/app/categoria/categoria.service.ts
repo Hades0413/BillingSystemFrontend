@@ -26,7 +26,7 @@ export class CategoriaService {
     if (usuarioId) {
       const headers = this.getAuthHeaders();
       return this.http.get<Categoria[]>(
-        `${this.categoriaApiUrl}/listar?usuarioId=${usuarioId}`,
+        `${this.categoriaApiUrl}/listar/${usuarioId}`,
         { headers }
       );
     } else {

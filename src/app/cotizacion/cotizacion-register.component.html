@@ -1,0 +1,55 @@
+<div class="cotizacion-register">
+    <h2>Registrar Cotización</h2>
+    
+    <!-- Mensajes de éxito y error -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Formulario de cotización -->
+    <form (ngSubmit)="crearCotizacion()">
+      <div>
+        <label for="cotizacionCodigo">Código Cotización</label>
+        <input type="text" id="cotizacionCodigo" [(ngModel)]="cotizacion.CotizacionCodigo" name="cotizacionCodigo" required>
+      </div>
+      
+      <div>
+        <label for="cotizacionFecha">Fecha</label>
+        <input type="date" id="cotizacionFecha" [(ngModel)]="cotizacion.CotizacionFecha" name="cotizacionFecha" required>
+      </div>
+  
+      <div>
+        <label for="clienteId">Cliente</label>
+        <select id="clienteId" [(ngModel)]="cotizacion.ClienteId" name="clienteId" required>
+          <!-- Aquí debes añadir opciones dinámicas de clientes -->
+          <option *ngFor="let cliente of clientes" [value]="cliente.clienteId">{{ cliente.clienteNombreLegal }}</option>
+        </select>
+      </div>
+      
+      <!-- Más campos de cotización según sea necesario -->
+      
+      <button type="submit" [disabled]="isLoading">Crear Cotización</button>
+    </form>
+  
+    <hr>
+    
+    <!-- Productos de la cotización -->
+    <h3>Productos</h3>
+    <div *ngFor="let producto of productos; let i = index">
+      <div>
+        <label for="productoNombre">Nombre Producto</label>
+        <input type="text" [(ngModel)]="producto.ProductoNombre" name="productoNombre{{i}}">
+      </div>
+      <div>
+        <label for="productoPrecio">Precio</label>
+        <input type="number" [(ngModel)]="producto.ProductoPrecio" name="productoPrecio{{i}}">
+      </div>
+      <button (click)="eliminarProducto(i)">Eliminar Producto</button>
+    </div>
+  
+    <button (click)="agregarProducto()">Agregar Producto</button>
+  </div>
+  

@@ -31,6 +31,10 @@
   font-weight: bold;
 }
 
+.header-title {
+  text-align: center;
+}
+
 .card-content {
   margin-top: 20px;
 }
