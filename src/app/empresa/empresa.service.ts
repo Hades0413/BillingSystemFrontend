@@ -23,11 +23,23 @@ export class EmpresaService {
 
   registerEmpresa(empresa: Empresa): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.empresaApiUrl}/registrar`, empresa, { headers });
+    return this.http.post(`${this.empresaApiUrl}/registrar`, empresa, {
+      headers,
+    });
   }
 
   listarPorRuc(ruc: string): Observable<Empresa[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<Empresa[]>(`${this.empresaApiUrl}/listar-por-ruc/${ruc}`, { headers });
+    return this.http.get<Empresa[]>(
+      `${this.empresaApiUrl}/listar-por-ruc/${ruc}`,
+      { headers }
+    );
+  }
+
+  listarEmpresas(): Observable<Empresa[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Empresa[]>(`${this.empresaApiUrl}/listar`, {
+      headers,
+    });
   }
 }

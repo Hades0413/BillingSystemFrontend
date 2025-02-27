@@ -14,6 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CotizacionDetalleComponent } from './cotizacion-detalle.component';
 
 @Component({
   selector: 'app-cotizacion',
@@ -32,6 +34,8 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatIconModule,
     FormsModule,
+    MatDialogModule,
+    CotizacionDetalleComponent,
   ],
 })
 export class CotizacionComponent implements OnInit {
@@ -66,7 +70,8 @@ export class CotizacionComponent implements OnInit {
   constructor(
     private cotizacionService: CotizacionService,
     private clienteService: ClienteService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -152,7 +157,7 @@ export class CotizacionComponent implements OnInit {
   }
 
   obtenerUsuarioNombre(usuarioId: number): string {
-    return this.usuarioMap[usuarioId] || 'Usuario no encontrado'; 
+    return this.usuarioMap[usuarioId] || 'Usuario no encontrado';
   }
 
   toggleFilter(filterType: string): void {
@@ -165,11 +170,10 @@ export class CotizacionComponent implements OnInit {
 
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      filteredData = filteredData.filter(
-        (cotizacion) =>
-          Object.values(cotizacion).some((value) =>
-            String(value).toLowerCase().includes(term)
-          )
+      filteredData = filteredData.filter((cotizacion) =>
+        Object.values(cotizacion).some((value) =>
+          String(value).toLowerCase().includes(term)
+        )
       );
     }
 
@@ -201,9 +205,31 @@ export class CotizacionComponent implements OnInit {
     this.paginateCotizaciones();
   }
 
+
   verDetalles(cotizacion: Cotizacion): void {
-    alert(
-      `Detalles de la cotización:\nCódigo: ${cotizacion.CotizacionCodigo}\nFecha: ${cotizacion.CotizacionFecha}\nMonto Total: ${cotizacion.CotizacionMontoTotal}`
-    );
+    
+    const clienteNombre = this.obtenerClienteNombreLegal(cotizacion.ClienteId);
+    const usuarioNombres = this.obtenerUsuarioNombre(cotizacion.UsuarioId);
+    
+    const cotizacionDetalles = {
+      CotizacionId: cotizacion.CotizacionId,
+      CotizacionCodigo: cotizacion.CotizacionCodigo,
+      CotizacionFecha: cotizacion.CotizacionFecha,
+      CotizacionMontoTotal: cotizacion.CotizacionMontoTotal,
+      CotizacionMontoDescuento: cotizacion.CotizacionMontoDescuento,
+      CotizacionMontoImpuesto: cotizacion.CotizacionMontoImpuesto,
+      ClienteId: cotizacion.ClienteId,
+      UsuarioId: cotizacion.UsuarioId,
+      EmpresaId: cotizacion.EmpresaId,
+      ClienteNombre: clienteNombre, 
+      UsuarioNombre: usuarioNombres
+    };
+  
+    // Abrimos el modal y le pasamos los datos
+    this.dialog.open(CotizacionDetalleComponent, {
+      data: cotizacionDetalles,
+      width: '8000px',
+    });
   }
+  
 }

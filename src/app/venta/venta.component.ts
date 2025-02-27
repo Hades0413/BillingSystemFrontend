@@ -14,6 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { VentaDetalleComponent } from './venta-detalle.component';
 
 @Component({
   selector: 'app-venta',
@@ -33,6 +35,7 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatSortModule,
     FormsModule,
+    MatDialogModule,
   ],
 })
 export class VentaComponent implements OnInit {
@@ -68,7 +71,8 @@ export class VentaComponent implements OnInit {
   constructor(
     private ventaService: VentaService,
     private clienteService: ClienteService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -99,7 +103,7 @@ export class VentaComponent implements OnInit {
             ClienteId: venta.clienteId,
           }));
 
-          this.paginateSales(); 
+          this.paginateSales();
 
           this.clienteService.getClientes().subscribe(
             (clientes) => {
@@ -158,7 +162,7 @@ export class VentaComponent implements OnInit {
   }
 
   obtenerUsuarioNombre(usuarioId: number): string {
-    return this.usuarioMap[usuarioId] || 'Usuario no encontrado'; 
+    return this.usuarioMap[usuarioId] || 'Usuario no encontrado';
   }
 
   toggleFilter(filterType: string): void {
@@ -171,11 +175,10 @@ export class VentaComponent implements OnInit {
 
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      filteredData = filteredData.filter(
-        (venta) =>
-          Object.values(venta).some((value) =>
-            String(value).toLowerCase().includes(term)
-          )
+      filteredData = filteredData.filter((venta) =>
+        Object.values(venta).some((value) =>
+          String(value).toLowerCase().includes(term)
+        )
       );
     }
 
@@ -215,9 +218,28 @@ export class VentaComponent implements OnInit {
     this.paginateSales();
   }
 
-  verDetalles(venta: Venta): void {
-    alert(
-      `Detalles de la venta:\nCódigo: ${venta.VentaCodigo}\nFecha: ${venta.VentaFecha}\nMonto Total: ${venta.VentaMontoTotal}`
-    );
+  verDetallesVenta(venta: Venta): void {
+    
+    const clienteNombre = this.obtenerClienteNombreLegal(venta.ClienteId);
+    const usuarioNombres = this.obtenerUsuarioNombre(venta.UsuarioId);
+
+    const ventaDetalles = {
+      VentaId: venta.VentaId,
+      VentaCodigo: venta.VentaCodigo,
+      VentaFecha: venta.VentaFecha,
+      VentaMontoTotal: venta.VentaMontoTotal,
+      VentaMontoDescuento: venta.VentaMontoDescuento,
+      VentaMontoImpuesto: venta.VentaMontoImpuesto,
+      ClienteId: venta.ClienteId,
+      UsuarioId: venta.UsuarioId,
+      EmpresaId: venta.EmpresaId,
+      ClienteNombre: clienteNombre,
+      UsuarioNombre: usuarioNombres,
+    };
+
+    this.dialog.open(VentaDetalleComponent, {
+      data: ventaDetalles,
+      width: '800px',
+    });
   }
 }

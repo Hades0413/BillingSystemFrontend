@@ -1,0 +1,61 @@
+
+  
+
+  <mat-dialog-content class="dialog-content">
+    <h2 mat-dialog-title class="dialog-title">Detalles de la Cotización</h2>
+  
+    <mat-card class="detail-card">
+      <mat-card-header class="header">
+        <div class="header-title">Factura - Cotización</div>
+      </mat-card-header>
+  
+      <mat-card-content class="card-content">
+        <div class="invoice-header">
+          <div class="invoice-id">{{ data.VentaCodigo }}
+          </div>
+          <div class="invoice-date">
+            {{ data.VentaFecha | date: "dd/MM/yyyy" }}
+          </div>
+        </div>
+  
+        <div class="invoice-summary">
+          <div class="summary-item">
+            <div class="label">Monto Total:</div>
+            <div class="value">S/. {{ data.VentaMontoTotal | currency: "PEN" }}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Descuento:</div>
+            <div class="value">S/. {{ data.VentaMontoDescuento | currency: "PEN" }}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">Impuesto:</div>
+            <div class="value">S/. {{ data.VentaMontoImpuesto | currency: "PEN" }}</div>
+          </div>
+        </div>
+        <div class="summary-item">
+          <div class="label">VentaFormaPago:</div>
+          <div class="value"> {{ data.VentaFormaPago}}</div>
+        </div>
+  
+        <div class="invoice-details">
+          <div class="detail-row">
+            <div class="label">Cliente:</div>
+            <div class="value">{{ data.VentaRucCliente }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="label">Usuario:</div>
+            <div class="value">{{ data.ClienteNombre }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="label">Empresa ID:</div>
+            <div class="value">{{ data.EmpresaId }}</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button mat-dialog-close color="primary">Cerrar</button>
+  </mat-dialog-actions>
+  
