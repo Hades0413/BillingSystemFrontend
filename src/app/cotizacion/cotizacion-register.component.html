@@ -1,55 +1,127 @@
 <div class="cotizacion-register">
-    <h2>Registrar Cotización</h2>
-    
-    <!-- Mensajes de éxito y error -->
-    <div *ngIf="successMessage" class="alert alert-success">
-      {{ successMessage }}
-    </div>
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
+    <h2 class="title">Registrar Cotización</h2>
   
-    <!-- Formulario de cotización -->
     <form (ngSubmit)="crearCotizacion()">
-      <div>
-        <label for="cotizacionCodigo">Código Cotización</label>
-        <input type="text" id="cotizacionCodigo" [(ngModel)]="cotizacion.CotizacionCodigo" name="cotizacionCodigo" required>
-      </div>
-      
-      <div>
-        <label for="cotizacionFecha">Fecha</label>
-        <input type="date" id="cotizacionFecha" [(ngModel)]="cotizacion.CotizacionFecha" name="cotizacionFecha" required>
-      </div>
+      <div class="form-container">
+        <!-- Campos de cotización -->
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Cliente</mat-label>
+          <input
+            matInput
+            type="number"
+            id="clienteId"
+            [(ngModel)]="cotizacion.ClienteId"
+            name="clienteId"
+            required
+          />
+        </mat-form-field>
   
-      <div>
-        <label for="clienteId">Cliente</label>
-        <select id="clienteId" [(ngModel)]="cotizacion.ClienteId" name="clienteId" required>
-          <!-- Aquí debes añadir opciones dinámicas de clientes -->
-          <option *ngFor="let cliente of clientes" [value]="cliente.clienteId">{{ cliente.clienteNombreLegal }}</option>
-        </select>
+        <!-- Campo para el descuento -->
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Descuento (%)</mat-label>
+          <input
+            matInput
+            type="number"
+            id="cotizacionMontoDescuento"
+            [(ngModel)]="cotizacion.CotizacionMontoDescuento"
+            name="cotizacionMontoDescuento"
+            required
+            (input)="calcularTotalConDescuento()"
+          />
+        </mat-form-field>
+  
+        <!-- Selección de productos -->
+        <div *ngFor="let producto of productos; let i = index" class="producto-container">
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Producto</mat-label>
+            <mat-select
+              id="productoId{{ i }}"
+              [(ngModel)]="producto.ProductoId"
+              name="productoId{{ i }}"
+              (selectionChange)="actualizarProducto(i)"
+              required
+            >
+              <mat-option *ngFor="let prod of productosDisponibles" [value]="prod.productoId">
+                {{ prod.productoNombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Cantidad</mat-label>
+            <input
+              matInput
+              type="number"
+              id="cantidad{{ i }}"
+              [(ngModel)]="producto.Cantidad"
+              name="cantidad{{ i }}"
+              required
+              (input)="calcularTotal(i)"
+            />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Precio Unitario</mat-label>
+            <input
+              matInput
+              type="number"
+              id="precioUnitario{{ i }}"
+              [(ngModel)]="producto.PrecioUnitario"
+              name="precioUnitario{{ i }}"
+              required
+              [disabled]="true"
+            />
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill" class="form-field">
+            <mat-label>Total</mat-label>
+            <input
+              matInput
+              type="number"
+              id="total{{ i }}"
+              [(ngModel)]="producto.Total"
+              name="total{{ i }}"
+              [disabled]="true"
+            />
+          </mat-form-field>
+  
+          <button mat-raised-button color="warn" class="remove-button" (click)="eliminarProducto(i)">
+            Eliminar Producto
+          </button>
+        </div>
+  
+        <div class="actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="add-button"
+            (click)="agregarProducto()"
+          >
+            Agregar Producto
+          </button>
+  
+          <button
+            mat-raised-button
+            color="accent"
+            type="submit"
+            [disabled]="isLoading"
+            class="submit-button"
+          >
+            Registrar Cotización
+          </button>
+        </div>
+  
+        <!-- Mostrar el cotizacionMontoTotal calculado -->
+        <div *ngIf="cotizacion.CotizacionMontoTotal" class="totals">
+          <h3>
+            Total Cotización: {{ cotizacion.CotizacionMontoTotal | currency }}
+          </h3>
+          <h4>
+            Impuesto (18%): {{ cotizacion.CotizacionMontoImpuesto | currency }}
+          </h4>
+        </div>
       </div>
-      
-      <!-- Más campos de cotización según sea necesario -->
-      
-      <button type="submit" [disabled]="isLoading">Crear Cotización</button>
     </form>
-  
-    <hr>
-    
-    <!-- Productos de la cotización -->
-    <h3>Productos</h3>
-    <div *ngFor="let producto of productos; let i = index">
-      <div>
-        <label for="productoNombre">Nombre Producto</label>
-        <input type="text" [(ngModel)]="producto.ProductoNombre" name="productoNombre{{i}}">
-      </div>
-      <div>
-        <label for="productoPrecio">Precio</label>
-        <input type="number" [(ngModel)]="producto.ProductoPrecio" name="productoPrecio{{i}}">
-      </div>
-      <button (click)="eliminarProducto(i)">Eliminar Producto</button>
-    </div>
-  
-    <button (click)="agregarProducto()">Agregar Producto</button>
   </div>
   

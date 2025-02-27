@@ -1,0 +1,77 @@
+.cotizacion-register {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-field {
+    margin-bottom: 1.2rem;
+  }
+  
+  .producto-container {
+    margin-bottom: 1.5rem;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
+  
+  .add-button,
+  .submit-button {
+    width: 48%;
+  }
+  
+  .remove-button {
+    margin-top: 0.5rem;
+  }
+  
+  .totals {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+  }
+  
+  .totals h3,
+  .totals h4 {
+    color: #333;
+  }
+  
+  button {
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #6200ea;
+  }
+  
+  button[disabled] {
+    background-color: #bdbdbd;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  mat-label {
+    font-weight: 500;
+    color: #333;
+  }
+  

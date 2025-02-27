@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CotizacionDetalleComponent } from './cotizacion-detalle.component';
 import { EmpresaService } from '../empresa/empresa.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cotizacion',
@@ -77,7 +78,8 @@ export class CotizacionComponent implements OnInit {
     private clienteService: ClienteService,
     private authService: AuthService,
     private empresaService: EmpresaService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -268,5 +270,9 @@ export class CotizacionComponent implements OnInit {
       data: cotizacionDetalles,
       width: '800px',
     });
+  }
+
+  irACrearCotizacion(): void {
+    this.router.navigate(['/crear-cotizacion']);
   }
 }

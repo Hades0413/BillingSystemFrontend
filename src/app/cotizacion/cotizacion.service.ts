@@ -15,6 +15,7 @@ export class CotizacionService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
+  // Método para obtener las cotizaciones por usuario
   getCotizacionesPorUsuario(usuarioId: number): Observable<Cotizacion[]> {
     const token = this.authService.getToken();
     if (!token) {
@@ -22,28 +23,33 @@ export class CotizacionService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     return this.http.get<Cotizacion[]>(
       `${this.cotizacionApiUrl}/listar-por-usuario/${usuarioId}`,
       { headers }
     );
   }
 
-  getProductosPorCotizacion(cotizacionId: number): Observable<CotizacionProductos[]> {
+  // Método para obtener los productos asociados a una cotización
+  getProductosPorCotizacion(
+    cotizacionId: number
+  ): Observable<CotizacionProductos[]> {
     const token = this.authService.getToken();
     if (!token) {
       throw new Error('No se encontró el token de autenticación.');
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     return this.http.get<CotizacionProductos[]>(
       `${this.cotizacionProductoApiUrl}/listar-por-cotizacion/${cotizacionId}`,
       { headers }
     );
   }
 
-  crearCotizacion(cotizacion: Cotizacion): Observable<Cotizacion> {
+  // Método para crear una cotización y sus productos
+  crearCotizacion(
+    cotizacion: Cotizacion,
+    productos: CotizacionProductos[]
+  ): Observable<Cotizacion> {
     const token = this.authService.getToken();
     if (!token) {
       throw new Error('No se encontró el token de autenticación.');
@@ -51,17 +57,33 @@ export class CotizacionService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.post<Cotizacion>(this.cotizacionApiUrl, cotizacion, { headers });
+    const cotizacionConProductos = {
+      ...cotizacion,
+      productos: productos,
+    };
+
+    // Cambia la URL para que apunte al endpoint correcto "/registrar"
+    return this.http.post<Cotizacion>(
+      `${this.cotizacionApiUrl}/registrar`,  // Se agrega "/registrar"
+      cotizacionConProductos,
+      { headers }
+    );
   }
 
-  crearProductosCotizacion(cotizacionProducto: CotizacionProductos[]): Observable<CotizacionProductos[]> {
+  // Método para crear productos asociados a una cotización
+  crearProductosCotizacion(
+    cotizacionProducto: CotizacionProductos[]
+  ): Observable<CotizacionProductos[]> {
     const token = this.authService.getToken();
     if (!token) {
       throw new Error('No se encontró el token de autenticación.');
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    return this.http.post<CotizacionProductos[]>(this.cotizacionProductoApiUrl, cotizacionProducto, { headers });
+    return this.http.post<CotizacionProductos[]>(
+      this.cotizacionProductoApiUrl,
+      cotizacionProducto,
+      { headers }
+    );
   }
 }

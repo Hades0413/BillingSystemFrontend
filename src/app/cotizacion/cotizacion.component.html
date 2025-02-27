@@ -13,6 +13,9 @@
     </mat-form-field>
   </div>
 
+
+  <button mat-raised-button color="primary" (click)="irACrearCotizacion()">Nueva Cotización</button>
+
   <div *ngIf="!isLoading && !errorMessage">
     <mat-table [dataSource]="paginatedCotizaciones" matSort>
 

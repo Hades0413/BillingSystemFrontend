@@ -4,10 +4,9 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { AuthGuard } from './auth/auth.guard';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { DashboardPrducto } from './features/productos/producto.component';
-import { CategoriaComponent } from './categoria/categoria.component';
 import { DashboardRegisterComponent } from './features/register/register.component';
-import { VentaComponent } from './venta/venta.component';
 import { DashboardVentas } from './features/ventas/ventas.component';
+import { CotizacionRegisterComponent } from './cotizacion/cotizacion-register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,10 +19,9 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'productos', component: DashboardPrducto },
-      { path: 'ventas', component: DashboardVentas },/*
-      { path: 'ventas', component: VentasComponent },*/
+      { path: 'ventas', component: DashboardVentas },
+      { path: 'crear-cotizacion', component: CotizacionRegisterComponent } /*
+      { path: 'ventas', component: VentasComponent },*/,
     ],
   },
-
-  
 ];
