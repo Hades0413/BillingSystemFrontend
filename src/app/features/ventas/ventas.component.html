@@ -1,22 +1,25 @@
 <div class="dashboard-ventas">
-    <mat-toolbar class="navbarPrimary">
-      <p>
-        Te encuentras en el mes de prueba gratis. Si deseas acceder a uno de
-        nuestros planes<span> Haz click aquí</span>
-      </p>
+  <mat-toolbar class="navbarPrimary">
+    <p>
+      Te encuentras en el mes de prueba gratis. Si deseas acceder a uno de
+      nuestros planes<span> Haz click aquí</span>
+    </p>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-toolbar class="navbar">
+      <button mat-button (click)="selectTab('venta')">Venta</button>
+      <button mat-button (click)="selectTab('categoria')">Factura</button>
+      <button mat-button (click)="selectTab('cotizacion')">Cotizacion</button>
     </mat-toolbar>
-  
-    <div class="content">
-      <mat-toolbar class="navbar">
-        <button mat-button (click)="selectTab('venta')">Venta</button>
-        <button mat-button (click)="selectTab('categoria')">Categoría</button>
-      </mat-toolbar>
-      <div *ngIf="selectedTab === 'venta'">
-        <app-venta></app-venta>
-      </div>
-      <div *ngIf="selectedTab === 'categoria'">
-        <app-factura></app-factura>
-      </div>
+    <div *ngIf="selectedTab === 'venta'">
+      <app-venta></app-venta>
+    </div>
+    <div *ngIf="selectedTab === 'categoria'">
+      <app-factura></app-factura>
+    </div>
+    <div *ngIf="selectedTab === 'cotizacion'">
+      <app-cotizacion></app-cotizacion>
     </div>
   </div>
-  
+</div>

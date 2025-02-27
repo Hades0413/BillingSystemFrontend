@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FacturaComponent } from '../../venta/factura.component';
+import { CotizacionComponent } from '../../cotizacion/cotizacion.component';
 
 @Component({
   selector: 'app-dashboard-ventas',
@@ -17,6 +18,7 @@ import { FacturaComponent } from '../../venta/factura.component';
   imports: [
     VentaComponent,
     FacturaComponent,
+    CotizacionComponent,
     CommonModule,
     FormsModule,
     MatFormFieldModule,
@@ -26,6 +28,7 @@ import { FacturaComponent } from '../../venta/factura.component';
     MatSelectModule,
     MatToolbarModule,
     MatButtonModule,
+    CotizacionComponent,
   ],
 })
 export class DashboardVentas {

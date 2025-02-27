@@ -1,1 +1,64 @@
-<p>cotizacion works!</p>
+<div *ngIf="cotizaciones.length > 0">
+  <h2>Cotizaciones</h2>
+  <table mat-table [dataSource]="paginatedCotizaciones" matSort>
+    <ng-container matColumnDef="CotizacionCodigo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ cotizacion.CotizacionCodigo }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="CotizacionFecha">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ cotizacion.CotizacionFecha | date : "dd/MM/yyyy" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="CotizacionMontoTotal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto Total</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ cotizacion.CotizacionMontoTotal | currency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="CotizacionMontoDescuento">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Descuento</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ cotizacion.CotizacionMontoDescuento | currency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="CotizacionMontoImpuesto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Impuesto</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ cotizacion.CotizacionMontoImpuesto | currency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ClienteNombre">
+      <th mat-header-cell *matHeaderCellDef>Cliente</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        {{ obtenerClienteNombreLegal(cotizacion.ClienteId) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Acciones">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let cotizacion">
+        <button mat-button (click)="verDetalles(cotizacion)">
+          Ver detalles
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="itemsPerPage"
+    (page)="changePage($event)"
+  ></mat-paginator>
+</div>
