@@ -1,77 +1,109 @@
 .cotizacion-register {
-    max-width: 800px;
-    margin: 0 auto;
     padding: 2rem;
-    background-color: #fafafa;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto;
   }
   
   .title {
     text-align: center;
     font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: #333;
+    color: #3f51b5;
   }
   
   .form-container {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
   }
   
   .form-field {
-    margin-bottom: 1.2rem;
+    width: 100%;
   }
   
-  .producto-container {
+  .mat-form-field {
     margin-bottom: 1.5rem;
+  }
+  
+  .mat-header-cell {
+    font-weight: bold;
+    background-color: #f1f1f1;
+  }
+  
+  .mat-column-actions {
+    text-align: center;
+  }
+  
+  button.mat-raised-button {
+    margin: 0.5rem 0;
+  }
+  
+  button.add-button {
+    width: 200px;
+  }
+  
+  button.submit-button {
+    width: 300px;
+    margin-top: 1rem;
   }
   
   .actions {
     display: flex;
     justify-content: space-between;
-    margin-top: 1.5rem;
+    align-items: center;
   }
   
-  .add-button,
-  .submit-button {
-    width: 48%;
-  }
-  
-  .remove-button {
-    margin-top: 0.5rem;
+  .mat-elevation-z8 {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .totals {
     margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e0e0e0;
+    padding: 1rem;
+    background-color: #f4f7fc;
+    border-radius: 8px;
+  }
+  
+  .totals h3 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: #388e3c;
+  }
+  
+  .totals h4 {
+    font-size: 1.2rem;
+    color: #e64a19;
+  }
+  
+  /* Añadir estilo para la tabla */
+  table.mat-table {
+    width: 100%;
+    margin-top: 2rem;
+    border-radius: 8px;
+  }
+  
+  .mat-column-productoSeleccionado, 
+  .mat-column-cantidad, 
+  .mat-column-precioUnitario, 
+  .mat-column-total {
     text-align: center;
   }
   
-  .totals h3,
-  .totals h4 {
-    color: #333;
-  }
-  
-  button {
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #6200ea;
-  }
-  
-  button[disabled] {
-    background-color: #bdbdbd;
-  }
-  
-  .mat-form-field {
+  .mat-select {
     width: 100%;
   }
   
-  mat-label {
-    font-weight: 500;
-    color: #333;
+  input[type="number"] {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .mat-table .mat-header-row {
+    background-color: #3f51b5;
+    color: white;
+  }
+  
+  .mat-table .mat-row {
+    background-color: #fafafa;
   }
   
