@@ -7,6 +7,7 @@ import { DashboardPrducto } from './features/productos/producto.component';
 import { DashboardRegisterComponent } from './features/register/register.component';
 import { DashboardVentas } from './features/ventas/ventas.component';
 import { CotizacionRegisterComponent } from './cotizacion/cotizacion-register.component';
+import { RegisterVentaComponent } from './venta/register-venta.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,7 +21,8 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'productos', component: DashboardPrducto },
       { path: 'ventas', component: DashboardVentas },
-      { path: 'crear-cotizacion', component: CotizacionRegisterComponent } /*
+      { path: 'crear-cotizacion', component: CotizacionRegisterComponent }, 
+      { path: 'crear-venta', component: RegisterVentaComponent } /*
       { path: 'ventas', component: VentasComponent },*/,
     ],
   },

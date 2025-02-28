@@ -1,0 +1,108 @@
+
+.venta-register {
+    margin: 20px;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .form-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .venta-table,
+  .productos-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f1f1f1;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 15px;
+  }
+  
+  .add-product-button,
+  .register-button {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .add-product-button button,
+  .register-button button {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .mat-raised-button {
+    font-weight: bold;
+  }
+  
+  .totals {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 18px;
+  }
+  
+  .totals h3 {
+    font-size: 22px;
+    color: #4caf50;
+  }
+  
+  .totals h4 {
+    color: #ff5722;
+  }
+  
+  @media (max-width: 768px) {
+    .venta-register {
+      padding: 10px;
+    }
+  
+    .title {
+      font-size: 20px;
+    }
+  
+    mat-grid-list {
+      grid-template-columns: 1fr;
+    }
+  
+    .mat-form-field {
+      width: 100%;
+    }
+  
+    .venta-table,
+    .productos-table {
+      width: 100%;
+      table-layout: auto; 
+    }
+  
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+  
+    .mat-select {
+      width: 100%;
+    }
+  
+    .mat-form-field {
+      width: 100%;
+    }
+  }
+  

@@ -95,8 +95,8 @@ export class FacturaComponent implements OnInit {
             VentaMontoTotal: venta.ventaMontoTotal,
             VentaMontoDescuento: venta.ventaMontoDescuento,
             VentaMontoImpuesto: venta.ventaMontoImpuesto,
-            VentaFormaPago: venta.ventaFormaPago,
-            VentaRucCliente: venta.ventaRucCliente,
+            FormaPago: venta.FormaPago,
+            ClienteRuc: venta.ClienteRuc,
             TipoComprobanteId: venta.tipoComprobanteId,
             UsuarioId: venta.usuarioId,
             EmpresaId: venta.empresaId,
@@ -228,15 +228,13 @@ export class FacturaComponent implements OnInit {
 
     if (this.filterPago) {
       filteredData = filteredData.filter((venta) =>
-        venta.VentaFormaPago.toLowerCase().includes(
-          this.filterPago.toLowerCase()
-        )
+        venta.FormaPago.toLowerCase().includes(this.filterPago.toLowerCase())
       );
     }
 
     if (this.filterRuc) {
       filteredData = filteredData.filter((venta) =>
-        venta.VentaRucCliente.toString().includes(this.filterRuc)
+        venta.ClienteRuc.toString().includes(this.filterRuc)
       );
     }
 

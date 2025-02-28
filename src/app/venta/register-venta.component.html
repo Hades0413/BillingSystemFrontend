@@ -1,0 +1,200 @@
+<div class="venta-register">
+  <h2 class="title">Registrar Venta</h2>
+
+  <form (ngSubmit)="crearVenta()">
+    <div class="form-container">
+      <!-- Campos de venta organizados en dos grupos de dos columnas -->
+      <mat-grid-list cols="2" rowHeight="200px" gutterSize="20px">
+        <mat-grid-tile>
+          <table class="venta-table">
+            <tr>
+              <td><mat-label>Cliente</mat-label></td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="venta.ClienteId"
+                    name="clienteId"
+                    required
+                  />
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td><mat-label>Descuento (%)</mat-label></td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="venta.VentaMontoDescuento"
+                    name="ventaMontoDescuento"
+                    required
+                    (input)="calcularTotalConDescuento()"
+                  />
+                </mat-form-field>
+              </td>
+            </tr>
+            <!-- Nueva fila para RUC del Cliente -->
+            <tr>
+              <td><mat-label>RUC Cliente</mat-label></td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="text"
+                    [(ngModel)]="venta.ClienteRuc"
+                    name="ClienteRuc"
+                    required
+                  />
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <table class="venta-table">
+            <tr>
+              <td><mat-label>Tipo de Comprobante</mat-label></td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select
+                    [(ngModel)]="venta.TipoComprobanteId"
+                    name="tipoComprobanteId"
+                    required
+                  >
+                    <mat-option [value]="1">Factura</mat-option>
+                    <mat-option [value]="2">Boleta</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td><mat-label>Forma de Pago</mat-label></td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select
+                    [(ngModel)]="venta.FormaPago"
+                    name="FormaPago"
+                    required
+                  >
+                    <mat-option value="Efectivo">Efectivo</mat-option>
+                    <mat-option value="Tarjeta">Tarjeta</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+      <!-- Productos -->
+      <div class="table-responsive">
+        <table class="productos-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detalle of DetallesVenta; let i = index">
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select
+                    [(ngModel)]="detalle.ProductoId"
+                    name="productoId{{ i }}"
+                    (selectionChange)="actualizarProducto(i)"
+                    required
+                  >
+                    <mat-option
+                      *ngFor="let producto of productosDisponibles"
+                      [value]="producto.productoId"
+                    >
+                      {{ producto.productoNombre }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="detalle.Cantidad"
+                    name="cantidad{{ i }}"
+                    required
+                    (input)="calcularTotal(i)"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="detalle.PrecioUnitario"
+                    name="precioUnitario{{ i }}"
+                    required
+                    [disabled]="true"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    [(ngModel)]="detalle.Total"
+                    name="total{{ i }}"
+                    [disabled]="true"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="eliminarProducto(i)"
+                >
+                  Eliminar Producto
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botón para agregar producto -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="agregarProducto()"
+      >
+        Agregar Producto
+      </button>
+
+      <!-- Botón para registrar venta -->
+      <button
+        mat-raised-button
+        color="accent"
+        type="submit"
+        [disabled]="isLoading"
+      >
+        Registrar Venta
+      </button>
+    </div>
+
+    <!-- Mostrar el monto total calculado -->
+    <div *ngIf="venta.VentaMontoTotal" class="totals">
+      <h3>Total Venta: {{ venta.VentaMontoTotal | currency }}</h3>
+      <h4>Impuesto (18%): {{ venta.VentaMontoImpuesto | currency }}</h4>
+    </div>
+  </form>
+</div>

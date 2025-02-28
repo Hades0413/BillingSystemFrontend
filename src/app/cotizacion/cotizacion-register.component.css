@@ -1,13 +1,17 @@
 .cotizacion-register {
-    padding: 2rem;
-    max-width: 1200px;
+    padding: 20px;
+    max-width: 100%;
     margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   .title {
     text-align: center;
     font-size: 2rem;
     color: #3f51b5;
+    margin-bottom: 1.5rem;
   }
   
   .form-container {
@@ -16,40 +20,46 @@
     gap: 1.5rem;
   }
   
-  .form-field {
+  .cotizacion-table,
+  .productos-table {
     width: 100%;
-  }
-  
-  .mat-form-field {
+    border-collapse: collapse;
     margin-bottom: 1.5rem;
   }
   
-  .mat-header-cell {
-    font-weight: bold;
-    background-color: #f1f1f1;
+  .cotizacion-table td,
+  .productos-table th,
+  .productos-table td {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    text-align: left;
   }
   
-  .mat-column-actions {
-    text-align: center;
+  .productos-table th {
+    background-color: #3f51b5;
+    color: white;
+    font-weight: bold;
   }
   
   button.mat-raised-button {
-    margin: 0.5rem 0;
-  }
-  
-  button.add-button {
-    width: 200px;
-  }
-  
-  button.submit-button {
-    width: 300px;
     margin-top: 1rem;
   }
   
-  .actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  button.add-button,
+  button.submit-button {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 1.5rem;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  .mat-select,
+  input[type="number"] {
+    width: 100%;
+    text-align: center;
   }
   
   .mat-elevation-z8 {
@@ -62,6 +72,7 @@
     padding: 1rem;
     background-color: #f4f7fc;
     border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   
   .totals h3 {
@@ -75,35 +86,107 @@
     color: #e64a19;
   }
   
-  /* Añadir estilo para la tabla */
-  table.mat-table {
-    width: 100%;
-    margin-top: 2rem;
-    border-radius: 8px;
+  /* Media Queries para Responsividad */
+  
+  @media (max-width: 1200px) {
+    .cotizacion-register {
+      padding: 1.5rem;
+    }
+  
+    .title {
+      font-size: 1.8rem;
+    }
   }
   
-  .mat-column-productoSeleccionado, 
-  .mat-column-cantidad, 
-  .mat-column-precioUnitario, 
-  .mat-column-total {
-    text-align: center;
+  @media (max-width: 992px) {
+    .cotizacion-register {
+      padding: 1.2rem;
+    }
+  
+    .title {
+      font-size: 1.6rem;
+    }
+  
+    .form-container {
+      gap: 1.5rem;
+    }
+  
+    button.add-button,
+    button.submit-button {
+      width: 100%;
+    }
   }
   
-  .mat-select {
-    width: 100%;
+  @media (max-width: 768px) {
+    .cotizacion-register {
+      padding: 1rem;
+    }
+  
+    .title {
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+  
+    .form-container {
+      gap: 1.2rem;
+    }
+  
+    .cotizacion-table td,
+    .productos-table th,
+    .productos-table td {
+      padding: 0.5rem;
+    }
+  
+    button.add-button,
+    button.submit-button {
+      width: 100%;
+      max-width: none;
+    }
+  
+    .totals h3 {
+      font-size: 1.3rem;
+    }
+  
+    .totals h4 {
+      font-size: 1rem;
+    }
   }
   
-  input[type="number"] {
-    width: 100%;
-    text-align: center;
-  }
+  @media (max-width: 480px) {
+    .cotizacion-register {
+      padding: 0.8rem;
+    }
   
-  .mat-table .mat-header-row {
-    background-color: #3f51b5;
-    color: white;
-  }
+    .title {
+      font-size: 1.2rem;
+    }
   
-  .mat-table .mat-row {
-    background-color: #fafafa;
+    .mat-form-field {
+      margin-bottom: 0.8rem;
+    }
+  
+    .form-container {
+      gap: 1rem;
+    }
+  
+    .cotizacion-table td,
+    .productos-table th,
+    .productos-table td {
+      padding: 0.5rem;
+    }
+  
+    button.add-button,
+    button.submit-button {
+      width: 100%;
+      padding: 1rem;
+    }
+  
+    .totals h3 {
+      font-size: 1.2rem;
+    }
+  
+    .totals h4 {
+      font-size: 0.9rem;
+    }
   }
   

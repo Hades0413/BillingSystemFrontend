@@ -1,6 +1,10 @@
 <div class="container mt-5 venta">
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
+
+  <button mat-raised-button color="primary" (click)="irACrearVenta()">Nueva Venta</button>
+
+
   <mat-card *ngIf="errorMessage" class="error-card">
     <mat-card-content>{{ errorMessage }}</mat-card-content>
   </mat-card>

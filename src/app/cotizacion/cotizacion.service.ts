@@ -48,7 +48,7 @@ export class CotizacionService {
   // Método para crear una cotización y sus productos
   crearCotizacion(
     cotizacion: Cotizacion,
-    productos: CotizacionProductos[]
+    productos: CotizacionProductos[] 
   ): Observable<Cotizacion> {
     const token = this.authService.getToken();
     if (!token) {
@@ -64,7 +64,7 @@ export class CotizacionService {
 
     // Cambia la URL para que apunte al endpoint correcto "/registrar"
     return this.http.post<Cotizacion>(
-      `${this.cotizacionApiUrl}/registrar`,  // Se agrega "/registrar"
+      `${this.cotizacionApiUrl}/registrar`,
       cotizacionConProductos,
       { headers }
     );
