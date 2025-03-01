@@ -1,32 +1,57 @@
-<div class="sidebar" [class.sidebar-closed]="isSidebarClosed">
-  <div class="sidebar-header">
-    <h2 *ngIf="!isSidebarClosed">Menú</h2>
-    <button (click)="toggleSidebar()" class="sidebar-toggle">
-      <mat-icon>menu</mat-icon>
-    </button>
-  </div>
+<div class="mobile-overlay" [class.active]="!isSidebarClosed" (click)="toggleSidebar()"></div>
 
-  <ul class="sidebar-list" *ngIf="!isSidebarClosed">
-    <li (click)="navigateTo('/productos')" class="sidebar-item">
-      <mat-icon class="sidebar-icon">category</mat-icon>
-      <span class="sidebar-text">Producto</span>
-    </li>
-    <li (click)="navigateTo('/categorias')" class="sidebar-item">
-      <mat-icon class="sidebar-icon">category</mat-icon>
-      <span class="sidebar-text">categorias</span>
-    </li>
-    <li (click)="navigateTo('/compras')" class="sidebar-item">
-      <mat-icon class="sidebar-icon">shopping_cart</mat-icon>
-      <span class="sidebar-text">Compras</span>
-    </li>
-    <li (click)="navigateTo('/ventas')" class="sidebar-item">
-      <mat-icon class="sidebar-icon">store</mat-icon>
-      <span class="sidebar-text">Ventas</span>
-    </li>
-  </ul>
+<button *ngIf="isSidebarClosed" class="sidebar-toggle-mobile" (click)="toggleSidebar()">
+    <mat-icon>menu</mat-icon>
+</button>
 
-  <button (click)="logout()" class="logout-button" *ngIf="!isSidebarClosed">
-    <mat-icon>exit_to_app</mat-icon>
-    <span class="sidebar-text">Cerrar Sesión</span>
-  </button>
-</div>
+<nav class="sidebar" [class.sidebar-closed]="isSidebarClosed" [class.sidebar-open]="!isSidebarClosed">
+    <div class="sidebar-header">
+        <button class="sidebar-toggle" (click)="toggleSidebar()">
+            <mat-icon>{{ isSidebarClosed ? 'menu' : 'chevron_left' }}</mat-icon>
+        </button>
+    </div>
+
+    <div class="sidebar-list">
+        <a class="sidebar-item" routerLink="/dashboard" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">dashboard</mat-icon>
+            <span class="sidebar-text">Dashboard</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/ventas" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">shopping_cart</mat-icon>
+            <span class="sidebar-text">Ventas</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/cotizacion" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">description</mat-icon>
+            <span class="sidebar-text">Cotización</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/productos" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">inventory</mat-icon>
+            <span class="sidebar-text">Productos</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/clientes" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">people</mat-icon>
+            <span class="sidebar-text">Clientes</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/reportes" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">bar_chart</mat-icon>
+            <span class="sidebar-text">Reportes</span>
+        </a>
+
+        <a class="sidebar-item" routerLink="/configuracion" routerLinkActive="active">
+            <mat-icon class="sidebar-icon">settings</mat-icon>
+            <span class="sidebar-text">Configuración</span>
+        </a>
+    </div>
+
+    <div class="logout-container">
+        <button (click)="logout()" class="logout-button">
+            <mat-icon>exit_to_app</mat-icon>
+            <span class="sidebar-text">Cerrar Sesión</span>
+        </button>
+    </div>
+</nav>

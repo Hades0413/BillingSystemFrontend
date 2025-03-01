@@ -40,3 +40,33 @@
     margin-left: 0; 
   }
 }
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 60px; /* Ancho del sidebar cuando está cerrado */
+    padding: 24px;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.main-content.sidebar-expanded {
+    margin-left: 250px; /* Ancho del sidebar cuando está abierto */
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
+
+    .main-content.sidebar-expanded {
+        margin-left: 0;
+    }
+}

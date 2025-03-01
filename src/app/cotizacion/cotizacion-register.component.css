@@ -1,192 +1,453 @@
 .cotizacion-register {
-    padding: 20px;
-    max-width: 100%;
-    margin: 0 auto;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  padding: 24px;
+  margin: -32px -32px 32px -32px;
+  border-radius: 12px 12px 0 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.form-container {
+  padding: 24px;
+}
+
+/* Estilos para la tabla de cotización */
+.cotizacion-table {
+  width: 100%;
+  margin-bottom: 32px;
+  border-collapse: separate;
+  border-spacing: 0 16px;
+}
+
+.cotizacion-table td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.cotizacion-table td:first-child {
+  width: 180px;
+  color: #2196f3;
+  font-weight: 500;
+}
+
+/* Estilos para la tabla de productos */
+.productos-table {
+  width: 100%;
+  margin: 32px 0;
+  border-collapse: collapse;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.productos-table th {
+  background-color: #2196f3;
+  color: #ffffff;
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.productos-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.productos-table tr:hover {
+  background-color: #f7f7f7;
+}
+
+/* Estilos para los campos de formulario */
+mat-form-field {
+  width: 100%;
+}
+
+/* Estilos para los botones */
+button {
+  margin: 12px;
+}
+
+button[color="primary"] {
+  margin-right: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons mat-icon {
+  margin-right: 4px;
+}
+
+/* Tabla responsive */
+.table-responsive {
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.productos-table {
+  min-width: 800px; /* Asegura que la tabla no se comprima demasiado */
+}
+
+/* Animación para nuevas filas de productos */
+.producto-row {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para la sección de totales */
+.totals {
+  background: #f9f9f9;
+  padding: 24px;
+  border-radius: 8px;
+  margin-top: 32px;
+}
+
+.totals h3, .totals h4 {
+  margin: 12px 0;
+  color: #2196f3;
+}
+
+.totals h3 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.totals h4 {
+  font-size: 18px;
+  color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .cotizacion-register {
+    padding: 16px;
+  }
+
   .title {
-    text-align: center;
-    font-size: 2rem;
-    color: #3f51b5;
-    margin-bottom: 1.5rem;
+    font-size: 24px;
+    margin: -16px -16px 16px -16px;
+    padding: 16px;
   }
-  
+
   .form-container {
+    padding: 16px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-buttons button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .totals {
+    margin: 24px -16px -16px;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .cotizacion-table {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 16px;
   }
-  
-  .cotizacion-table,
-  .productos-table {
+
+  .cotizacion-table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+
+  .cotizacion-table td {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1.5rem;
+    padding: 8px 0;
   }
-  
-  .cotizacion-table td,
+
+  .cotizacion-table td:first-child {
+    font-weight: 500;
+    color: #2196f3;
+    padding-bottom: 4px;
+  }
+
+  .productos-table {
+    font-size: 14px;
+  }
+
+  .productos-table th {
+    padding: 12px 8px;
+  }
+
+  .productos-table td {
+    padding: 8px;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .totals h3 {
+    font-size: 20px;
+  }
+
+  .totals h4 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cotizacion-register {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  .form-container {
+    padding: 12px;
+  }
+
+  .table-responsive {
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  .productos-table {
+    font-size: 13px;
+  }
+
   .productos-table th,
   .productos-table td {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    text-align: left;
+    padding: 8px 4px;
   }
-  
-  .productos-table th {
-    background-color: #3f51b5;
-    color: white;
-    font-weight: bold;
+
+  button mat-icon {
+    font-size: 18px;
   }
-  
-  button.mat-raised-button {
-    margin-top: 1rem;
+}
+
+.cotizacion-container {
+  padding: 32px;
+  min-height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.cotizacion-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+mat-card-header {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+  margin: -20px -20px 20px -20px;
+}
+
+mat-card-title {
+  font-size: 28px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h3 {
+  color: #2196f3;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+mat-form-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-container {
+  margin-top: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.productos-table {
+  width: 100%;
+}
+
+.mat-mdc-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.mat-mdc-row:hover {
+  background-color: #e3f2fd;
+}
+
+.mat-mdc-header-cell {
+  background-color: #2196f3;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 16px 20px;
+}
+
+.mat-mdc-cell {
+  padding: 16px 20px;
+}
+
+.totals-section {
+  background: #f9f9f9;
+  padding: 24px;
+  border-radius: 8px;
+  margin-top: 32px;
+}
+
+.total-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 18px;
+}
+
+.total-final {
+  border-top: 2px solid #2196f3;
+  margin-top: 12px;
+  padding-top: 16px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.amount {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #e0e0e0;
+}
+
+button[type="submit"] {
+  min-width: 180px;
+}
+
+.loading-bar {
+  margin-top: 16px;
+}
+
+.alert {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.alert-error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cotizacion-container {
+    padding: 20px;
   }
-  
-  button.add-button,
-  button.submit-button {
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  mat-form-field {
     width: 100%;
-    max-width: 300px;
-    margin-top: 1.5rem;
   }
-  
-  .mat-form-field {
+
+  .section-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .section-header button {
     width: 100%;
   }
-  
-  .mat-select,
-  input[type="number"] {
-    width: 100%;
-    text-align: center;
+
+  .mat-mdc-cell {
+    padding: 12px;
   }
-  
-  .mat-elevation-z8 {
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .totals {
-    margin-top: 2rem;
-    padding: 1rem;
-    background-color: #f4f7fc;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  
-  .totals h3 {
-    font-size: 1.5rem;
-    margin: 0;
-    color: #388e3c;
-  }
-  
-  .totals h4 {
-    font-size: 1.2rem;
-    color: #e64a19;
-  }
-  
-  /* Media Queries para Responsividad */
-  
-  @media (max-width: 1200px) {
-    .cotizacion-register {
-      padding: 1.5rem;
-    }
-  
-    .title {
-      font-size: 1.8rem;
-    }
-  }
-  
-  @media (max-width: 992px) {
-    .cotizacion-register {
-      padding: 1.2rem;
-    }
-  
-    .title {
-      font-size: 1.6rem;
-    }
-  
-    .form-container {
-      gap: 1.5rem;
-    }
-  
-    button.add-button,
-    button.submit-button {
-      width: 100%;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .cotizacion-register {
-      padding: 1rem;
-    }
-  
-    .title {
-      font-size: 1.4rem;
-      margin-bottom: 1.2rem;
-    }
-  
-    .form-container {
-      gap: 1.2rem;
-    }
-  
-    .cotizacion-table td,
-    .productos-table th,
-    .productos-table td {
-      padding: 0.5rem;
-    }
-  
-    button.add-button,
-    button.submit-button {
-      width: 100%;
-      max-width: none;
-    }
-  
-    .totals h3 {
-      font-size: 1.3rem;
-    }
-  
-    .totals h4 {
-      font-size: 1rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .cotizacion-register {
-      padding: 0.8rem;
-    }
-  
-    .title {
-      font-size: 1.2rem;
-    }
-  
-    .mat-form-field {
-      margin-bottom: 0.8rem;
-    }
-  
-    .form-container {
-      gap: 1rem;
-    }
-  
-    .cotizacion-table td,
-    .productos-table th,
-    .productos-table td {
-      padding: 0.5rem;
-    }
-  
-    button.add-button,
-    button.submit-button {
-      width: 100%;
-      padding: 1rem;
-    }
-  
-    .totals h3 {
-      font-size: 1.2rem;
-    }
-  
-    .totals h4 {
-      font-size: 0.9rem;
-    }
-  }
-  
+}

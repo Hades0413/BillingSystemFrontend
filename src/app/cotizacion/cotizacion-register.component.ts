@@ -20,6 +20,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatOption } from '@angular/material/core';
 import { CotizacionService } from '../cotizacion/cotizacion.service';
 import { ProductoService } from '../producto/producto.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 interface ProductoResponse {
   data: Producto[];
@@ -46,6 +48,8 @@ interface ProductoResponse {
     MatOption,
     MatFormFieldModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
 })
 export class CotizacionRegisterComponent implements OnInit {
@@ -66,6 +70,9 @@ export class CotizacionRegisterComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
+
+  // Columnas para la tabla de productos
+  displayedColumns: string[] = ['producto', 'cantidad', 'precio', 'total', 'acciones'];
 
   constructor(
     private cotizacionService: CotizacionService,
@@ -98,20 +105,41 @@ export class CotizacionRegisterComponent implements OnInit {
   }
 
   crearCotizacion(): void {
-    this.isLoading = true;
-    this.calcularTotalCotizacion();
+    if (this.validarFormulario()) {
+      this.isLoading = true;
+      this.calcularTotalCotizacion();
 
-    this.cotizacionService.crearCotizacion(this.cotizacion, this.productos).subscribe(
-      () => {
-        this.successMessage = 'Cotización creada con éxito';
-        this.isLoading = false;
-        this.router.navigate(['/ventas']);
-      },
-      () => {
-        this.isLoading = false;
-        this.errorMessage = 'Error al crear la cotización';
-      }
-    );
+      this.cotizacionService.crearCotizacion(this.cotizacion, this.productos).subscribe(
+        () => {
+          this.successMessage = 'Cotización creada con éxito';
+          this.isLoading = false;
+          this.router.navigate(['/ventas']);
+        },
+        () => {
+          this.isLoading = false;
+          this.errorMessage = 'Error al crear la cotización';
+        }
+      );
+    }
+  }
+
+  validarFormulario(): boolean {
+    if (!this.cotizacion.ClienteId) {
+      this.errorMessage = 'Por favor, seleccione un cliente';
+      return false;
+    }
+
+    if (this.productos.length === 0) {
+      this.errorMessage = 'Por favor, agregue al menos un producto';
+      return false;
+    }
+
+    if (this.productos.some(p => !p.ProductoId || p.Cantidad <= 0)) {
+      this.errorMessage = 'Por favor, complete todos los campos de productos y asegúrese que las cantidades sean mayores a 0';
+      return false;
+    }
+
+    return true;
   }
 
   agregarProducto(): void {
@@ -171,5 +199,22 @@ export class CotizacionRegisterComponent implements OnInit {
 
   calcularTotalConDescuento(): void {
     this.calcularTotalCotizacion();
+  }
+
+  // Método para mostrar mensajes de error o éxito
+  mostrarMensaje(mensaje: string, esError: boolean = false): void {
+    if (esError) {
+      this.errorMessage = mensaje;
+      this.successMessage = '';
+    } else {
+      this.successMessage = mensaje;
+      this.errorMessage = '';
+    }
+    
+    // Limpiar mensaje después de 3 segundos
+    setTimeout(() => {
+      this.errorMessage = '';
+      this.successMessage = '';
+    }, 3000);
   }
 }

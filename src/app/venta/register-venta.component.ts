@@ -29,6 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatOption } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-register-venta',
@@ -52,6 +53,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatSelectModule,
     MatGridListModule,
+    MatMenuModule,
   ],
 })
 export class RegisterVentaComponent implements OnInit {
@@ -75,6 +77,13 @@ export class RegisterVentaComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
+  displayedColumns: string[] = [
+    'producto',
+    'cantidad',
+    'precio',
+    'total',
+    'acciones',
+  ];
 
   constructor(
     private ventaService: VentaService,
@@ -85,6 +94,7 @@ export class RegisterVentaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarProductosDisponibles();
+    this.agregarProducto();
   }
 
   cargarProductosDisponibles(): void {

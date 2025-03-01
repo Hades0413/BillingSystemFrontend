@@ -1,108 +1,172 @@
+.venta-container {
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
 
-.venta-register {
-    margin: 20px;
+.venta-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-header {
+  background: linear-gradient(135deg, #1976d2, #64b5f6);
+  color: white;
+  padding: 16px;
+  border-radius: 8px 8px 0 0;
+  margin: -16px -16px 16px -16px;
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-section h3 {
+  color: #1976d2;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-container {
+  margin-top: 16px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.productos-table {
+  width: 100%;
+}
+
+.mat-mdc-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.mat-mdc-row:hover {
+  background-color: #e3f2fd;
+}
+
+.mat-mdc-header-cell {
+  background-color: #1976d2;
+  color: white;
+  font-weight: 500;
+  padding: 12px 16px;
+}
+
+.mat-mdc-cell {
+  padding: 12px 16px;
+}
+
+.totals-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 24px;
+}
+
+.total-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 16px;
+}
+
+.total-final {
+  border-top: 2px solid #1976d2;
+  margin-top: 8px;
+  padding-top: 16px;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.amount {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+button[type="submit"] {
+  min-width: 150px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .venta-container {
+    padding: 16px;
   }
-  
-  .title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
+
+  .form-row {
+    flex-direction: column;
   }
-  
-  .form-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-  }
-  
-  .venta-table,
-  .productos-table {
+
+  mat-form-field {
     width: 100%;
-    border-collapse: collapse;
   }
-  
-  th,
-  td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+
+  .section-header {
+    flex-direction: column;
+    gap: 16px;
   }
-  
-  th {
-    background-color: #f1f1f1;
-  }
-  
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 15px;
-  }
-  
-  .add-product-button,
-  .register-button {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .add-product-button button,
-  .register-button button {
+
+  .section-header button {
     width: 100%;
-    max-width: 200px;
   }
-  
-  .mat-raised-button {
-    font-weight: bold;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .totals {
-    margin-top: 20px;
-    text-align: right;
-    font-size: 18px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .totals h3 {
-    font-size: 22px;
-    color: #4caf50;
-  }
-  
-  .totals h4 {
-    color: #ff5722;
-  }
-  
-  @media (max-width: 768px) {
-    .venta-register {
-      padding: 10px;
-    }
-  
-    .title {
-      font-size: 20px;
-    }
-  
-    mat-grid-list {
-      grid-template-columns: 1fr;
-    }
-  
-    .mat-form-field {
-      width: 100%;
-    }
-  
-    .venta-table,
-    .productos-table {
-      width: 100%;
-      table-layout: auto; 
-    }
-  
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-    }
-  
-    .mat-select {
-      width: 100%;
-    }
-  
-    .mat-form-field {
-      width: 100%;
-    }
-  }
-  
+}
+
+.form-section {
+  animation: fadeIn 0.3s ease-out;
+}
