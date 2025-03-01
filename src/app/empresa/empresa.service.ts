@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Empresa } from '../shared/empresa.model';
 import { environment } from '../../environments/environment';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +10,10 @@ import { AuthService } from '../auth/auth.service';
 export class EmpresaService {
   private empresaApiUrl = environment.empresaApiUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    if (!token) {
-      throw new Error('No se encontró el token de autenticación.');
-    }
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return new HttpHeaders();
   }
 
   registerEmpresa(empresa: Empresa): Observable<any> {
