@@ -1,57 +1,69 @@
-<div class="mobile-overlay" [class.active]="!isSidebarClosed" (click)="toggleSidebar()"></div>
+<div
+  class="mobile-overlay"
+  [class.active]="!isSidebarClosed"
+  (click)="toggleSidebar()"
+></div>
 
-<button *ngIf="isSidebarClosed" class="sidebar-toggle-mobile" (click)="toggleSidebar()">
-    <mat-icon>menu</mat-icon>
+<button
+  *ngIf="isSidebarClosed"
+  class="sidebar-toggle-mobile"
+  (click)="toggleSidebar()"
+>
+  <mat-icon>menu</mat-icon>
 </button>
 
-<nav class="sidebar" [class.sidebar-closed]="isSidebarClosed" [class.sidebar-open]="!isSidebarClosed">
-    <div class="sidebar-header">
-        <button class="sidebar-toggle" (click)="toggleSidebar()">
-            <mat-icon>{{ isSidebarClosed ? 'menu' : 'chevron_left' }}</mat-icon>
-        </button>
-    </div>
+<nav
+  class="sidebar"
+  [class.sidebar-closed]="isSidebarClosed"
+  [class.sidebar-open]="!isSidebarClosed"
+>
+  <div class="sidebar-header">
+    <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <mat-icon>{{ isSidebarClosed ? "menu" : "chevron_left" }}</mat-icon>
+    </button>
+  </div>
 
-    <div class="sidebar-list">
-        <a class="sidebar-item" routerLink="/dashboard" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">dashboard</mat-icon>
-            <span class="sidebar-text">Dashboard</span>
-        </a>
+  <div class="sidebar-list">
+    <a class="sidebar-item" routerLink="/dashboard" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">dashboard</mat-icon>
+      <span class="sidebar-text">Dashboard</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/ventas" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">shopping_cart</mat-icon>
-            <span class="sidebar-text">Ventas</span>
-        </a>
+    <a class="sidebar-item" routerLink="/ventas" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">shopping_cart</mat-icon>
+      <span class="sidebar-text">Ventas</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/cotizacion" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">description</mat-icon>
-            <span class="sidebar-text">Cotización</span>
-        </a>
+    <a class="sidebar-item" routerLink="/cotizacion" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">description</mat-icon>
+      <span class="sidebar-text">Cotización</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/productos" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">inventory</mat-icon>
-            <span class="sidebar-text">Productos</span>
-        </a>
+    <a class="sidebar-item" routerLink="/productos" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">inventory</mat-icon>
+      <span class="sidebar-text">Productos</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/clientes" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">people</mat-icon>
-            <span class="sidebar-text">Clientes</span>
-        </a>
+    <a class="sidebar-item" routerLink="/clientes" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">people</mat-icon>
+      <span class="sidebar-text">Clientes</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/reportes" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">bar_chart</mat-icon>
-            <span class="sidebar-text">Reportes</span>
-        </a>
+    <a class="sidebar-item" routerLink="/reportes" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">bar_chart</mat-icon>
+      <span class="sidebar-text">Reportes</span>
+    </a>
 
-        <a class="sidebar-item" routerLink="/configuracion" routerLinkActive="active">
-            <mat-icon class="sidebar-icon">settings</mat-icon>
-            <span class="sidebar-text">Configuración</span>
-        </a>
-    </div>
+    <a class="sidebar-item" routerLink="/cuenta" routerLinkActive="active">
+      <mat-icon class="sidebar-icon">settings</mat-icon>
+      <span class="sidebar-text">Cuenta</span>
+    </a>
+  </div>
 
-    <div class="logout-container">
-        <button (click)="logout()" class="logout-button">
-            <mat-icon>exit_to_app</mat-icon>
-            <span class="sidebar-text">Cerrar Sesión</span>
-        </button>
-    </div>
+  <div class="logout-container">
+    <button (click)="logout()" class="logout-button">
+      <mat-icon>exit_to_app</mat-icon>
+      <span class="sidebar-text">Cerrar Sesión</span>
+    </button>
+  </div>
 </nav>
