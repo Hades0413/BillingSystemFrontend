@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { VentaService } from '../venta/venta.service';
 import { ProductoService } from '../producto/producto.service';
 import { MatGridListModule } from '@angular/material/grid-list';
-
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -30,6 +29,9 @@ import { MatOption } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
+import { ClienteService } from '../cliente/cliente.service';
+import { Cliente } from '../shared/cliente.model';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-register-venta',
@@ -54,6 +56,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSelectModule,
     MatGridListModule,
     MatMenuModule,
+    MatListModule,
   ],
 })
 export class RegisterVentaComponent implements OnInit {
@@ -72,6 +75,9 @@ export class RegisterVentaComponent implements OnInit {
     EmpresaId: 1,
     ClienteId: 0,
   };
+  clientes: Cliente[] = [];
+  clientesEncontrados: Cliente[] = [];
+  clienteNombre: string = '';
   DetallesVenta: VentaProducto[] = [];
   productosDisponibles: any[] = [];
   isLoading: boolean = false;
@@ -85,16 +91,73 @@ export class RegisterVentaComponent implements OnInit {
     'acciones',
   ];
 
+  clienteSeleccionado: boolean = false;
+
   constructor(
     private ventaService: VentaService,
     private productoService: ProductoService,
+    private clienteService: ClienteService,
     private router: Router,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    this.cargarClientes();
     this.cargarProductosDisponibles();
     this.agregarProducto();
+  }
+
+  buscarCliente(): void {
+    if (this.clienteNombre.length > 2) {
+      this.clienteService.getClientesPorNombre(this.clienteNombre).subscribe(
+        (clientes: Cliente[]) => {
+          this.clientesEncontrados = clientes;
+        },
+        (error) => {
+          this.errorMessage = 'Error al buscar clientes';
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: this.errorMessage,
+          });
+        }
+      );
+    } else {
+      this.clientesEncontrados = [];
+    }
+  }
+
+  seleccionarCliente(cliente: Cliente): void {
+    this.venta.ClienteId = cliente.clienteId;
+    this.venta.ClienteRuc = cliente.clienteRuc;
+    this.clienteNombre = cliente.clienteNombreLegal;
+    this.clientesEncontrados = [];
+    this.clienteSeleccionado = true;
+  }
+
+  // Agregado: Método para deseleccionar el cliente
+  deseleccionarCliente(): void {
+    this.clienteSeleccionado = false;
+    this.clienteNombre = '';
+    this.venta.ClienteId = 0;
+    this.venta.ClienteRuc = '11111111111';
+  }
+
+  cargarClientes(): void {
+    this.clienteService.getClientes().subscribe(
+      (response: Cliente[]) => {
+        this.clientes = response;
+      },
+      () => {
+        this.errorMessage = 'Error al cargar los clientes';
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.errorMessage,
+        });
+      }
+    );
   }
 
   cargarProductosDisponibles(): void {

@@ -1,95 +1,204 @@
 <div class="cotizacion-register">
-    <h2 class="title">Registrar Cotización</h2>
+  <h2 class="title">Registrar Cotización</h2>
 
-    <form (ngSubmit)="crearCotizacion()">
-        <div class="form-container">
-            <!-- Tabla para los campos de cotización -->
-            <table class="cotizacion-table">
-                <tr>
-                    <td><mat-label>Cliente</mat-label></td>
-                    <td>
-                        <mat-form-field appearance="fill">
-                            <input matInput type="number" id="clienteId" [(ngModel)]="cotizacion.ClienteId"
-                                name="clienteId" required />
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td><mat-label>Descuento (%)</mat-label></td>
-                    <td>
-                        <mat-form-field appearance="fill">
-                            <input matInput type="number" id="cotizacionMontoDescuento"
-                                [(ngModel)]="cotizacion.CotizacionMontoDescuento" name="cotizacionMontoDescuento"
-                                required (input)="calcularTotalConDescuento()" />
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
+  <form (ngSubmit)="crearCotizacion()">
+    <div class="form-container">
+      <!-- Tabla para los campos de cotización -->
+      <table class="cotizacion-table">
+        <div class="form-row">
+            <mat-form-field appearance="fill">
+              <mat-label>Cliente</mat-label>
+              <input
+                matInput
+                type="text"
+                [(ngModel)]="clienteNombre"
+                name="clienteNombre"
+                required
+                [readonly]="clienteSeleccionado"
+                (input)="buscarCliente()"
+              />
+              <!-- Aquí se cierra correctamente -->
 
-            <!-- Productos -->
-            <div class="table-responsive">
-                <table class="productos-table">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio Unitario</th>
-                            <th>Total</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let producto of productos; let i = index">
-                            <td>
-                                <mat-form-field appearance="fill">
-                                    <mat-select id="productoId{{ i }}" [(ngModel)]="producto.ProductoId"
-                                        name="productoId{{ i }}" (selectionChange)="actualizarProducto(i)" required>
-                                        <mat-option *ngFor="let prod of productosDisponibles" [value]="prod.productoId">
-                                            {{ prod.productoNombre }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </td>
-                            <td>
-                                <mat-form-field appearance="fill">
-                                    <input matInput type="number" id="cantidad{{ i }}" [(ngModel)]="producto.Cantidad"
-                                        name="cantidad{{ i }}" required (input)="calcularTotal(i)" />
-                                </mat-form-field>
-                            </td>
-                            <td>
-                                <mat-form-field appearance="fill">
-                                    <input matInput type="number" id="precioUnitario{{ i }}"
-                                        [(ngModel)]="producto.PrecioUnitario" name="precioUnitario{{ i }}" required
-                                        [disabled]="true" />
-                                </mat-form-field>
-                            </td>
-                            <td>
-                                <mat-form-field appearance="fill">
-                                    <input matInput type="number" id="total{{ i }}" [(ngModel)]="producto.Total"
-                                        name="total{{ i }}" [disabled]="true" />
-                                </mat-form-field>
-                            </td>
-                            <td>
-                                <button mat-raised-button color="warn" (click)="eliminarProducto(i)">Eliminar
-                                    Producto</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+            <!-- Botón para buscar cliente -->
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="buscarCliente()"
+              [disabled]="clienteSeleccionado"
+            >
+              Buscar
+            </button>
+
+            <!-- Resultados de búsqueda de clientes -->
+            <div
+              *ngIf="
+                clientesEncontrados?.length &&
+                clientesEncontrados.length > 0 &&
+                !clienteSeleccionado
+              "
+              class="search-results"
+            >
+              <mat-list>
+                <mat-list-item
+                  *ngFor="let cliente of clientesEncontrados"
+                  (click)="seleccionarCliente(cliente)"
+                >
+                  <h3 mat-line>{{ cliente.clienteNombreLegal }}</h3>
+                  <p mat-line>RUC: {{ cliente.clienteRuc }}</p>
+                </mat-list-item>
+              </mat-list>
             </div>
 
-            <!-- Botón para agregar producto -->
-            <button mat-raised-button color="primary" type="button" (click)="agregarProducto()">Agregar
-                Producto</button>
-
-            <!-- Botón para registrar cotización -->
-            <button mat-raised-button color="accent" type="submit" [disabled]="isLoading">Registrar Cotización</button>
-
-            <!-- Mostrar el cotizacionMontoTotal calculado -->
-            <div *ngIf="cotizacion.CotizacionMontoTotal" class="totals">
-                <h3>Total Cotización: {{ cotizacion.CotizacionMontoTotal | currency }}</h3>
-                <h4>Impuesto (18%): {{ cotizacion.CotizacionMontoImpuesto | currency }}</h4>
+            <!-- Si cliente ya está seleccionado, mostrar información -->
+            <div *ngIf="clienteSeleccionado" class="cliente-seleccionado">
+              <h3>{{ clienteNombre }}</h3>
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="deseleccionarCliente()"
+              >
+                Deseleccionar
+              </button>
             </div>
-        </div>
-    </form>
+          </div>
+
+
+
+
+        <tr>
+          <td><mat-label>Descuento (%)</mat-label></td>
+          <td>
+            <mat-form-field appearance="fill">
+              <input
+                matInput
+                type="number"
+                id="cotizacionMontoDescuento"
+                [(ngModel)]="cotizacion.CotizacionMontoDescuento"
+                name="cotizacionMontoDescuento"
+                required
+                (input)="calcularTotalConDescuento()"
+              />
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Productos -->
+      <div class="table-responsive">
+        <table class="productos-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productos; let i = index">
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select
+                    id="productoId{{ i }}"
+                    [(ngModel)]="producto.ProductoId"
+                    name="productoId{{ i }}"
+                    (selectionChange)="actualizarProducto(i)"
+                    required
+                  >
+                    <mat-option
+                      *ngFor="let prod of productosDisponibles"
+                      [value]="prod.productoId"
+                    >
+                      {{ prod.productoNombre }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    id="cantidad{{ i }}"
+                    [(ngModel)]="producto.Cantidad"
+                    name="cantidad{{ i }}"
+                    required
+                    (input)="calcularTotal(i)"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    id="precioUnitario{{ i }}"
+                    [(ngModel)]="producto.PrecioUnitario"
+                    name="precioUnitario{{ i }}"
+                    required
+                    [disabled]="true"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <input
+                    matInput
+                    type="number"
+                    id="total{{ i }}"
+                    [(ngModel)]="producto.Total"
+                    name="total{{ i }}"
+                    [disabled]="true"
+                  />
+                </mat-form-field>
+              </td>
+              <td>
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="eliminarProducto(i)"
+                >
+                  Eliminar Producto
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botón para agregar producto -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="agregarProducto()"
+      >
+        Agregar Producto
+      </button>
+
+      <!-- Botón para registrar cotización -->
+      <button
+        mat-raised-button
+        color="accent"
+        type="submit"
+        [disabled]="isLoading"
+      >
+        Registrar Cotización
+      </button>
+
+      <!-- Mostrar el cotizacionMontoTotal calculado -->
+      <div *ngIf="cotizacion.CotizacionMontoTotal" class="totals">
+        <h3>
+          Total Cotización: {{ cotizacion.CotizacionMontoTotal | currency }}
+        </h3>
+        <h4>
+          Impuesto (18%): {{ cotizacion.CotizacionMontoImpuesto | currency }}
+        </h4>
+      </div>
+    </div>
+  </form>
 </div>

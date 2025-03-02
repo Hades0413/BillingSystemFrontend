@@ -22,6 +22,11 @@ import { CotizacionService } from '../cotizacion/cotizacion.service';
 import { ProductoService } from '../producto/producto.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { Cliente } from '../shared/cliente.model';
+import { ClienteService } from '../cliente/cliente.service';
+import Swal from 'sweetalert2';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
 
 interface ProductoResponse {
   data: Producto[];
@@ -49,7 +54,9 @@ interface ProductoResponse {
     MatFormFieldModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatMenuModule,
+    MatListModule,
   ],
 })
 export class CotizacionRegisterComponent implements OnInit {
@@ -65,23 +72,84 @@ export class CotizacionRegisterComponent implements OnInit {
     ClienteId: 0,
   };
 
+  clientes: Cliente[] = [];
+  clientesEncontrados: Cliente[] = [];
+  clienteNombre: string = '';
   productos: CotizacionProductos[] = [];
   productosDisponibles: any[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
 
-  // Columnas para la tabla de productos
-  displayedColumns: string[] = ['producto', 'cantidad', 'precio', 'total', 'acciones'];
+  clienteSeleccionado: boolean = false;
+
+  displayedColumns: string[] = [
+    'producto',
+    'cantidad',
+    'precio',
+    'total',
+    'acciones',
+  ];
 
   constructor(
     private cotizacionService: CotizacionService,
+    private clienteService: ClienteService,
     private productoService: ProductoService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.cargarProductosDisponibles();
+    this.cargarClientes();
+  }
+
+  buscarCliente(): void {
+    if (this.clienteNombre.length > 2) {
+      this.clienteService.getClientesPorNombre(this.clienteNombre).subscribe(
+        (clientes: Cliente[]) => {
+          this.clientesEncontrados = clientes;
+        },
+        (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al buscar clientes',
+          });
+        }
+      );
+    } else {
+      this.clientesEncontrados = [];
+    }
+  }
+
+  seleccionarCliente(cliente: Cliente): void {
+    this.cotizacion.ClienteId = cliente.clienteId;
+    this.clienteNombre = cliente.clienteNombreLegal; 
+    this.clientesEncontrados = [];
+    this.clienteSeleccionado = true;
+  }
+
+  deseleccionarCliente(): void {
+    this.clienteSeleccionado = false;
+    this.clienteNombre = '';
+    this.cotizacion.ClienteId = 0;
+  }
+
+  cargarClientes(): void {
+    this.clienteService.getClientes().subscribe(
+      (response: Cliente[]) => {
+        this.clientes = response;
+      },
+      () => {
+        this.errorMessage = 'Error al cargar los clientes';
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.errorMessage,
+        });
+      }
+    );
   }
 
   cargarProductosDisponibles(): void {
@@ -96,11 +164,21 @@ export class CotizacionRegisterComponent implements OnInit {
         () => {
           this.errorMessage = 'Error al cargar los productos';
           this.isLoading = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: this.errorMessage,
+          });
         }
       );
     } else {
       this.errorMessage = 'Usuario no autenticado.';
       this.isLoading = false;
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: this.errorMessage,
+      });
     }
   }
 
@@ -109,33 +187,62 @@ export class CotizacionRegisterComponent implements OnInit {
       this.isLoading = true;
       this.calcularTotalCotizacion();
 
-      this.cotizacionService.crearCotizacion(this.cotizacion, this.productos).subscribe(
-        () => {
-          this.successMessage = 'Cotización creada con éxito';
-          this.isLoading = false;
-          this.router.navigate(['/ventas']);
-        },
-        () => {
-          this.isLoading = false;
-          this.errorMessage = 'Error al crear la cotización';
-        }
-      );
+      this.cotizacionService
+        .crearCotizacion(this.cotizacion, this.productos)
+        .subscribe(
+          () => {
+            this.successMessage = 'Cotización creada con éxito';
+            this.isLoading = false;
+            Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: this.successMessage,
+            }).then(() => {
+              this.router.navigate(['/ventas']);
+            });
+          },
+          () => {
+            this.isLoading = false;
+            this.errorMessage = 'Error al crear la cotización';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: this.errorMessage,
+            });
+          }
+        );
     }
   }
 
   validarFormulario(): boolean {
     if (!this.cotizacion.ClienteId) {
       this.errorMessage = 'Por favor, seleccione un cliente';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: this.errorMessage,
+      });
       return false;
     }
 
     if (this.productos.length === 0) {
       this.errorMessage = 'Por favor, agregue al menos un producto';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: this.errorMessage,
+      });
       return false;
     }
 
-    if (this.productos.some(p => !p.ProductoId || p.Cantidad <= 0)) {
-      this.errorMessage = 'Por favor, complete todos los campos de productos y asegúrese que las cantidades sean mayores a 0';
+    if (this.productos.some((p) => !p.ProductoId || p.Cantidad <= 0)) {
+      this.errorMessage =
+        'Por favor, complete todos los campos de productos y asegúrese que las cantidades sean mayores a 0';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: this.errorMessage,
+      });
       return false;
     }
 
@@ -164,7 +271,8 @@ export class CotizacionRegisterComponent implements OnInit {
       (producto) => producto.productoId === productoId
     );
     if (productoSeleccionado) {
-      this.productos[index].PrecioUnitario = productoSeleccionado.productoPrecioVenta;
+      this.productos[index].PrecioUnitario =
+        productoSeleccionado.productoPrecioVenta;
       this.calcularTotal(index);
     }
   }
@@ -177,7 +285,8 @@ export class CotizacionRegisterComponent implements OnInit {
     );
 
     if (productoSeleccionado) {
-      const precioConIgv = producto.PrecioUnitario + productoSeleccionado.productoImpuestoIgv;
+      const precioConIgv =
+        producto.PrecioUnitario + productoSeleccionado.productoImpuestoIgv;
       producto.Total = precioConIgv * producto.Cantidad;
     }
     this.calcularTotalCotizacion();
@@ -189,7 +298,8 @@ export class CotizacionRegisterComponent implements OnInit {
       subtotal += producto.Total;
     });
 
-    const descuentoMonto = (this.cotizacion.CotizacionMontoDescuento / 100) * subtotal;
+    const descuentoMonto =
+      (this.cotizacion.CotizacionMontoDescuento / 100) * subtotal;
     const impuesto = (subtotal - descuentoMonto) * 0.18;
     this.cotizacion.CotizacionMontoImpuesto = parseFloat(impuesto.toFixed(2));
     this.cotizacion.CotizacionMontoTotal = parseFloat(
@@ -199,22 +309,5 @@ export class CotizacionRegisterComponent implements OnInit {
 
   calcularTotalConDescuento(): void {
     this.calcularTotalCotizacion();
-  }
-
-  // Método para mostrar mensajes de error o éxito
-  mostrarMensaje(mensaje: string, esError: boolean = false): void {
-    if (esError) {
-      this.errorMessage = mensaje;
-      this.successMessage = '';
-    } else {
-      this.successMessage = mensaje;
-      this.errorMessage = '';
-    }
-    
-    // Limpiar mensaje después de 3 segundos
-    setTimeout(() => {
-      this.errorMessage = '';
-      this.successMessage = '';
-    }, 3000);
   }
 }

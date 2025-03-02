@@ -20,7 +20,6 @@ export class VentaService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  // Método para obtener ventas por usuario
   getVentasPorUsuario(usuarioId: number): Observable<VentaResponse> {
     const token = this.authService.getToken();
     if (!token) {
@@ -44,7 +43,6 @@ export class VentaService {
       );
   }
 
-  // Método para crear una venta con productos
   crearVenta(venta: Venta, DetallesVenta: VentaProducto[]): Observable<string> {
     const token = this.authService.getToken();
     if (!token) {
@@ -60,7 +58,7 @@ export class VentaService {
     return this.http
       .post(`${this.ventaApiUrl}/registrar`, ventaConProductos, {
         headers,
-        responseType: 'text', // Espera una respuesta de tipo texto
+        responseType: 'text',
       })
       .pipe(
         catchError((error) => {
@@ -72,7 +70,6 @@ export class VentaService {
       );
   }
 
-  // Método para crear productos asociados a una venta
   crearProductosVenta(
     ventaProducto: VentaProducto[]
   ): Observable<VentaProducto[]> {

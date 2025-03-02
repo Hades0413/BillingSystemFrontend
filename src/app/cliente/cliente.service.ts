@@ -23,4 +23,16 @@ export class ClienteService {
 
     return this.http.get<Cliente[]>(`${this.clienteApiUrl}/listar`, { headers });
   }
+
+  // Método para listar clientes por nombre legal
+  getClientesPorNombre(nombre: string): Observable<Cliente[]> {
+    const token = this.authService.getToken();
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<Cliente[]>(`${this.clienteApiUrl}/listar/nombre/${nombre}`, { headers });
+  }
 }
