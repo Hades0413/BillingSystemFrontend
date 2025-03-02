@@ -57,6 +57,10 @@ mat-form-field {
   min-width: 200px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -131,7 +135,6 @@ button[type="submit"] {
   min-width: 150px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .venta-container {
     padding: 16px;
@@ -153,9 +156,20 @@ button[type="submit"] {
   .section-header button {
     width: 100%;
   }
+
+  .table-container {
+    margin-top: 12px;
+  }
+
+  .total-item {
+    font-size: 14px;
+  }
+
+  .total-final {
+    font-size: 16px;
+  }
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;

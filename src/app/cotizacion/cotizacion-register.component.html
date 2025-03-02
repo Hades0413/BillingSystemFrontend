@@ -3,7 +3,7 @@
 
   <form (ngSubmit)="crearCotizacion()">
     <div class="form-container">
-      <!-- Tabla para los campos de cotización -->
+      
       <table class="cotizacion-table">
         <div class="form-row">
             <mat-form-field appearance="fill">
@@ -17,12 +17,9 @@
                 [readonly]="clienteSeleccionado"
                 (input)="buscarCliente()"
               />
-              <!-- Aquí se cierra correctamente -->
-
               <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
 
-            <!-- Botón para buscar cliente -->
             <button
               mat-raised-button
               color="primary"
@@ -32,7 +29,6 @@
               Buscar
             </button>
 
-            <!-- Resultados de búsqueda de clientes -->
             <div
               *ngIf="
                 clientesEncontrados?.length &&
@@ -52,7 +48,6 @@
               </mat-list>
             </div>
 
-            <!-- Si cliente ya está seleccionado, mostrar información -->
             <div *ngIf="clienteSeleccionado" class="cliente-seleccionado">
               <h3>{{ clienteNombre }}</h3>
               <button
@@ -64,9 +59,6 @@
               </button>
             </div>
           </div>
-
-
-
 
         <tr>
           <td><mat-label>Descuento (%)</mat-label></td>
@@ -86,7 +78,6 @@
         </tr>
       </table>
 
-      <!-- Productos -->
       <div class="table-responsive">
         <table class="productos-table">
           <thead>
@@ -170,7 +161,6 @@
         </table>
       </div>
 
-      <!-- Botón para agregar producto -->
       <button
         mat-raised-button
         color="primary"
@@ -180,7 +170,6 @@
         Agregar Producto
       </button>
 
-      <!-- Botón para registrar cotización -->
       <button
         mat-raised-button
         color="accent"
@@ -190,7 +179,6 @@
         Registrar Cotización
       </button>
 
-      <!-- Mostrar el cotizacionMontoTotal calculado -->
       <div *ngIf="cotizacion.CotizacionMontoTotal" class="totals">
         <h3>
           Total Cotización: {{ cotizacion.CotizacionMontoTotal | currency }}

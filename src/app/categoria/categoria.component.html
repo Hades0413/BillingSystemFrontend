@@ -5,7 +5,6 @@
     <mat-card-content>{{ errorMessage }}</mat-card-content>
   </mat-card>
 
-  <!-- Barra de búsqueda -->
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <mat-form-field appearance="outline" class="w-50">
       <mat-label>Buscar Categoría</mat-label>
@@ -14,23 +13,20 @@
     </mat-form-field>
   </div>
 
-  <!-- Botón Crear Categoría -->
   <div class="mb-3 d-flex justify-content-end">
     <button mat-raised-button color="primary" (click)="openRegisterCategoria()">
       Crear Categoría
     </button>
   </div>
 
-  <!-- Mostrar el formulario de registro como un modal -->
   <div *ngIf="showRegisterCategoria" class="modal-overlay" (click)="closeRegisterCategoria()">
-    <div class="modal-content" (click)="$event.stopPropagation()"> <!-- Evitar que el click cierre el modal -->
+    <div class="modal-content" (click)="$event.stopPropagation()">
       <app-register-categoria></app-register-categoria>
     </div>
   </div>
 
   <div *ngIf="!isLoading && !errorMessage">
     <mat-table [dataSource]="dataSource" matSort>
-      <!-- Orden -->
       <ng-container matColumnDef="Orden">
         <mat-header-cell *matHeaderCellDef mat-sort-header>
           Orden
@@ -38,7 +34,6 @@
         <mat-cell *matCellDef="let categoria; let i = index">{{ i + 1 }}</mat-cell>
       </ng-container>
 
-      <!-- Nombre -->
       <ng-container matColumnDef="CategoriaNombre">
         <mat-header-cell *matHeaderCellDef mat-sort-header (click)="toggleFilter('nombre')" [class.filter-active]="activeFilter === 'nombre'">
           <div class="filter-header">
@@ -51,7 +46,6 @@
         <mat-cell *matCellDef="let categoria">{{ categoria.CategoriaNombre }}</mat-cell>
       </ng-container>
 
-      <!-- Acciones -->
       <ng-container matColumnDef="Acciones">
         <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
         <mat-cell *matCellDef="let categoria">

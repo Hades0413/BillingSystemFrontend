@@ -3,7 +3,7 @@ import { CategoriaService } from './categoria.service';
 import { Categoria } from '../shared/categoria.model';
 import { AuthService } from '../auth/auth.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
@@ -50,10 +50,18 @@ export class CategoriaComponent implements OnInit {
   currentPage: number = 0;
   searchTerm: string = '';
 
+  categoriaForm: any;
+
   constructor(
     private categoriaService: CategoriaService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.categoriaForm = this.fb.group({
+      categoriaNombre: ['', [Validators.required, Validators.minLength(3)]],
+    });
+  }
+
 
   ngOnInit(): void {
     this.loadCategorias();
@@ -184,15 +192,47 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Variable para controlar la visibilidad del componente de registro
   showRegisterCategoria: boolean = false;
 
-  // Método para abrir el modal
   openRegisterCategoria(): void {
-    this.showRegisterCategoria = true;
+    Swal.fire({
+      title: 'Crear nueva categoría',
+      input: 'text',
+      inputPlaceholder: 'Ingresa el nombre de la categoría',
+      showCancelButton: true,
+      confirmButtonText: 'Crear',
+      cancelButtonText: 'Cancelar',
+      preConfirm: (categoriaNombre) => {
+        if (!categoriaNombre || categoriaNombre.trim().length < 3) {
+          Swal.showValidationMessage(
+            'El nombre debe tener al menos 3 caracteres.'
+          );
+          return;
+        }
+
+        const categoria: Categoria = {
+          CategoriaId: 0,
+          CategoriaNombre: categoriaNombre!,
+          UsuarioId: parseInt(localStorage.getItem('UsuarioId')!, 10),
+          CategoriaInformacionAdicional: new Date(),
+        };
+
+        return this.categoriaService
+          .registerCategoriasPorUsuario(categoria)
+          .toPromise()
+          .then(
+            (response) => {
+              Swal.fire('Categoría registrada', '', 'success');
+              this.loadCategorias(); // Recargar las categorías después de registrar
+            },
+            (error) => {
+              Swal.fire('Error', 'Hubo un problema al registrar la categoría', 'error');
+            }
+          );
+      },
+    });
   }
 
-  // Método para cerrar el modal
   closeRegisterCategoria(): void {
     this.showRegisterCategoria = false;
   }
