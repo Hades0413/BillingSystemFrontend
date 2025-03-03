@@ -29,7 +29,7 @@ export class LoginComponent {
   usuarioContrasena: string = '';
   isSubmitting = false;
   errorMessage: string | null = null;
-  hidePassword: boolean = true; // Para controlar la visibilidad de la contraseña
+  hidePassword: boolean = true;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -50,6 +50,11 @@ export class LoginComponent {
           console.error(error);
         }
       );
+  }
+
+  loginWithGitHub() {
+    this.isSubmitting = true;
+    this.authService.loginWithGitHub();
   }
 
   togglePasswordVisibility() {

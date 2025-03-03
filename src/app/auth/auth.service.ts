@@ -59,6 +59,10 @@ export class AuthService {
     );
   }
 
+  loginWithGitHub(): void {
+    window.location.href = `${this.authApiUrl}/oauth2-login`;
+  }
+
   listarUsuarios(): Observable<any> {
     const token = this.getToken();
     if (!token) {

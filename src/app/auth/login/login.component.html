@@ -53,6 +53,19 @@
             Iniciar sesión
           </button>
         </div>
+        
+        <div class="actions">
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="loginWithGitHub()"
+            [disabled]="isSubmitting"
+          >
+            <mat-icon>code</mat-icon>
+            Iniciar sesión con GitHub
+          </button>
+        </div>
+        
       </form>
     </div>
   </div>
