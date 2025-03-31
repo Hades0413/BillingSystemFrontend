@@ -35,10 +35,14 @@ export class VentaService {
       )
       .pipe(
         catchError((error) => {
-          console.error('Error al obtener ventas por usuario:', error);
-          return throwError(
-            () => new Error('Hubo un problema al obtener las ventas.')
-          );
+          if (error.status === 404 && error.error.message) {
+            return throwError(() => new Error(error.error.message));
+          } else {
+            console.error('Error al obtener ventas por usuario:', error);
+            return throwError(
+              () => new Error('Hubo un problema al obtener las ventas.')
+            );
+          }
         })
       );
   }

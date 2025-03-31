@@ -62,11 +62,11 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-
   ngOnInit(): void {
     this.loadCategorias();
   }
 
+  // Método para filtrar categorías
   filterCategorias(): void {
     this.dataSource.filter = this.searchTerm.trim().toLowerCase();
   }
@@ -75,6 +75,7 @@ export class CategoriaComponent implements OnInit {
     this.activeFilter = this.activeFilter === filterName ? null : filterName;
   }
 
+  // Método para aplicar filtro por nombre
   applyFilter(): void {
     this.dataSource.data = this.categorias.filter((categoria) => {
       return (
@@ -86,7 +87,10 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
+  // Cargar categorías desde el servicio
   loadCategorias(): void {
+    this.isLoading = true;
+
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response: any) => {
         if (response?.data) {
@@ -94,6 +98,7 @@ export class CategoriaComponent implements OnInit {
             CategoriaId: categoria.categoriaId,
             CategoriaNombre: categoria.categoriaNombre,
           }));
+          this.dataSource.data = this.categorias;
           this.applyFilter();
         } else {
           this.errorMessage = 'No se encontraron categorías.';
@@ -101,12 +106,13 @@ export class CategoriaComponent implements OnInit {
         this.isLoading = false;
       },
       (error) => {
-        this.errorMessage = 'Error al cargar las categorías.';
+        this.errorMessage = error.message || 'Error al cargar las categorías.';
         this.isLoading = false;
       }
     );
   }
 
+  // Cambiar página en la tabla
   changePage(event: PageEvent): void {
     console.log(
       'Página cambiada:',
@@ -116,6 +122,7 @@ export class CategoriaComponent implements OnInit {
     );
   }
 
+  // Editar una categoría
   editCategoria(categoria: Categoria): void {
     Swal.fire({
       title: 'Editar categoría',
@@ -143,6 +150,7 @@ export class CategoriaComponent implements OnInit {
                 'La categoría ha sido actualizada',
                 'success'
               );
+              this.loadCategorias();
             },
             (error) => {
               Swal.fire(
@@ -156,6 +164,7 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
+  // Eliminar una categoría
   deleteCategoria(categoria: Categoria): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -175,23 +184,21 @@ export class CategoriaComponent implements OnInit {
                 'La categoría ha sido eliminada',
                 'success'
               );
+              this.loadCategorias();
             },
             (error) => {
-              if (error.error && error.error.message) {
-                Swal.fire('Error', error.error.message, 'error');
-              } else {
-                Swal.fire(
-                  'Error',
-                  'Hubo un problema al eliminar la categoría',
-                  'error'
-                );
-              }
+              Swal.fire(
+                'Error',
+                'Hubo un problema al eliminar la categoría',
+                'error'
+              );
             }
           );
       }
     });
   }
 
+  // Mostrar el formulario para registrar una nueva categoría
   showRegisterCategoria: boolean = false;
 
   openRegisterCategoria(): void {
@@ -223,16 +230,21 @@ export class CategoriaComponent implements OnInit {
           .then(
             (response) => {
               Swal.fire('Categoría registrada', '', 'success');
-              this.loadCategorias(); // Recargar las categorías después de registrar
+              this.loadCategorias();
             },
             (error) => {
-              Swal.fire('Error', 'Hubo un problema al registrar la categoría', 'error');
+              Swal.fire(
+                'Error',
+                'Hubo un problema al registrar la categoría',
+                'error'
+              );
             }
           );
       },
     });
   }
 
+  // Cerrar el formulario de registrar categoría
   closeRegisterCategoria(): void {
     this.showRegisterCategoria = false;
   }

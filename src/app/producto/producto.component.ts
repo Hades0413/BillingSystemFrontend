@@ -25,6 +25,8 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { RegisterProductoComponent } from './register-producto.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-producto',
@@ -132,6 +134,8 @@ export class ProductoComponent implements OnInit {
   }
 
   loadCategorias(): void {
+    this.isLoading = true; // Mostrar indicador de carga
+
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response: any) => {
         if (response && response.data) {
@@ -153,7 +157,12 @@ export class ProductoComponent implements OnInit {
         this.isLoading = false;
       },
       (error) => {
-        this.errorMessage = 'Error al cargar las categorías.';
+        // Verificar si el error es 404 y contiene un mensaje de la API
+        if (error.status === 404 && error.error?.message) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Error al cargar las categorías.';
+        }
         this.isLoading = false;
       }
     );
@@ -163,28 +172,39 @@ export class ProductoComponent implements OnInit {
     const usuarioId = parseInt(localStorage.getItem('UsuarioId')!, 10);
 
     if (usuarioId) {
+      this.isLoading = true; // Mostrar indicador de carga
+
       this.productoService.getProductosPorUsuario(usuarioId).subscribe(
         (response) => {
-          this.productos = response.data.map((producto: any) => ({
-            ProductoId: producto.productoId,
-            ProductoCodigo: producto.productoCodigo,
-            ProductoNombre: producto.productoNombre,
-            ProductoStock: producto.productoStock,
-            ProductoPrecioVenta: producto.productoPrecioVenta,
-            ProductoImpuestoIgv: producto.productoImpuestoIgv,
-            UnidadId: producto.unidadId,
-            CategoriaId: producto.categoriaId,
-            UsuarioId: producto.usuarioId,
-            ProductoImagen: producto.productoImagen,
-            ProductoFechaUltimaActualizacion:
-              producto.productoFechaUltimaActualizacion,
-          }));
+          if (response?.data) {
+            this.productos = response.data.map((producto: any) => ({
+              ProductoId: producto.productoId,
+              ProductoCodigo: producto.productoCodigo,
+              ProductoNombre: producto.productoNombre,
+              ProductoStock: producto.productoStock,
+              ProductoPrecioVenta: producto.productoPrecioVenta,
+              ProductoImpuestoIgv: producto.productoImpuestoIgv,
+              UnidadId: producto.unidadId,
+              CategoriaId: producto.categoriaId,
+              UsuarioId: producto.usuarioId,
+              ProductoImagen: producto.productoImagen,
+              ProductoFechaUltimaActualizacion:
+                producto.productoFechaUltimaActualizacion,
+            }));
 
+            this.paginateProducts();
+          } else {
+            this.errorMessage = 'No se encontraron productos.';
+          }
           this.isLoading = false;
-          this.paginateProducts();
         },
         (error) => {
-          this.errorMessage = 'Error al cargar los productos.';
+          // Verificar si el error es 404 y contiene el mensaje de la API
+          if (error.status === 404 && error.error?.message) {
+            this.errorMessage = error.error.message;
+          } else {
+            this.errorMessage = 'Error al cargar los productos.';
+          }
           this.isLoading = false;
         }
       );
@@ -332,15 +352,71 @@ export class ProductoComponent implements OnInit {
     this.paginateProducts();
   }
 
+  showRegisterProducto: boolean = false;
+
+  registerProducto(): void {
+    const dialogRef = this.dialog.open(RegisterProductoComponent, {
+      width: '527px',
+      data: {
+        ProductoCodigo: '',
+        ProductoNombre: '',
+        ProductoStock: 0,
+        ProductoPrecioVenta: 0,
+        UnidadId: 0,
+        CategoriaId: 0,
+        ProductoImagen: '',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.cargarProductos();
+    });
+  }
+
+  closeRegisterCategoria(): void {
+    this.showRegisterProducto = false;
+  }
+
   editarProducto(producto: Producto): void {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
-      width: '500px',
+      width: '520px',
+      height: '600px',
       data: producto,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('Producto editado:', result);
+    dialogRef.afterClosed().subscribe(() => {
+      this.cargarProductos();
+    });
+  }
+
+  eliminarProducto(productoId: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Este producto se eliminará permanentemente!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productoService.eliminarProducto(productoId).subscribe(
+          () => {
+            Swal.fire(
+              '¡Eliminado!',
+              'El producto ha sido eliminado.',
+              'success'
+            );
+            this.cargarProductos();
+          },
+          (error) => {
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar el producto.',
+              'error'
+            );
+          }
+        );
       }
     });
   }

@@ -11,13 +11,28 @@
       <input matInput [(ngModel)]="searchTerm" (input)="filterCategorias()" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
-  </div>
-
-  <div class="mb-3 d-flex justify-content-end">
     <button mat-raised-button color="primary" (click)="openRegisterCategoria()">
       Crear Categoría
     </button>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div *ngIf="showRegisterCategoria" class="modal-overlay" (click)="closeRegisterCategoria()">
     <div class="modal-content" (click)="$event.stopPropagation()">

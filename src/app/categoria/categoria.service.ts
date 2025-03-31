@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Categoria } from '../shared/categoria.model';
 import { AuthService } from '../auth/auth.service';
-
+export interface CategoriaResponse {
+  code: number;
+  message: string;
+  data: Categoria[]; // Aquí está la propiedad 'data' que contiene las categorías
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -21,14 +25,25 @@ export class CategoriaService {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  getCategoriasPorUsuario(): Observable<Categoria[]> {
+  getCategoriasPorUsuario(): Observable<CategoriaResponse> {
     const usuarioId = parseInt(localStorage.getItem('UsuarioId')!, 10);
     if (usuarioId) {
       const headers = this.getAuthHeaders();
-      return this.http.get<Categoria[]>(
-        `${this.categoriaApiUrl}/listar/${usuarioId}`,
-        { headers }
-      );
+      return this.http
+        .get<CategoriaResponse>(`${this.categoriaApiUrl}/listar/${usuarioId}`, {
+          headers,
+        })
+        .pipe(
+          catchError((error) => {
+            if (error.status === 404 && error.error.message) {
+              return throwError(() => new Error(error.error.message));
+            } else {
+              return throwError(
+                () => new Error('Hubo un problema al obtener las categorías.')
+              );
+            }
+          })
+        );
     } else {
       throw new Error('Usuario no autenticado');
     }
@@ -66,9 +81,8 @@ export class CategoriaService {
 
   eliminarCategoria(categoriaId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.delete(
-      `${this.categoriaApiUrl}/eliminar/${categoriaId}`,
-      { headers }
-    );
+    return this.http.delete(`${this.categoriaApiUrl}/eliminar/${categoriaId}`, {
+      headers,
+    });
   }
 }

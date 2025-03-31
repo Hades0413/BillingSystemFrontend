@@ -1,15 +1,13 @@
-
-
-<h2 mat-dialog-title>Editar Producto</h2>
+<h2 mat-dialog-title>Registrar Producto</h2>
 <mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Nombre del Producto</mat-label>
-    <input matInput [(ngModel)]="data.ProductoNombre" />
-  </mat-form-field>
-
   <mat-form-field>
     <mat-label>Código del Producto</mat-label>
     <input matInput [(ngModel)]="data.ProductoCodigo" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nombre del Producto</mat-label>
+    <input matInput [(ngModel)]="data.ProductoNombre" />
   </mat-form-field>
 
   <mat-form-field>
@@ -33,8 +31,8 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Imagen del pProducto</mat-label>
-    <input matInput [(ngModel)]="data.ProductoImagen" type="number" />
+    <mat-label>Imagen del Producto</mat-label>
+    <input matInput [(ngModel)]="data.ProductoImagen" type="text" />
   </mat-form-field>
 </mat-dialog-content>
 

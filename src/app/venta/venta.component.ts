@@ -91,10 +91,21 @@ export class VentaComponent implements OnInit {
   }
 
   listarVentasPorUsuario(usuarioId: number): void {
+    this.isLoading = true; // Muestra el indicador de carga
+
     this.ventaService.getVentasPorUsuario(usuarioId).subscribe(
-      (response) => {
-        if (Array.isArray(response)) {
-          this.ventas = response.map((venta: any) => ({
+      (response: any) => {
+        // Si la respuesta es un mensaje específico indicando que no se encontraron ventas
+        if (
+          response &&
+          response.message &&
+          response.message.includes('No se encontraron ventas para el usuario')
+        ) {
+          this.errorMessage = response.message; // Muestra el mensaje específico de la API
+          this.ventas = []; // Limpiar la lista de ventas si no se encontraron
+        } else if (Array.isArray(response.data)) {
+          // Si la respuesta contiene ventas, procesamos los datos
+          this.ventas = response.data.map((venta: any) => ({
             VentaId: venta.ventaId,
             VentaVenta: venta.ventaVenta,
             VentaCodigo: venta.ventaCodigo,
@@ -110,8 +121,10 @@ export class VentaComponent implements OnInit {
             ClienteId: venta.clienteId,
           }));
 
+          // Paginar las ventas recibidas
           this.paginateSales();
 
+          // Obtener clientes
           this.clienteService.getClientes().subscribe(
             (clientes) => {
               this.clientes = clientes;
@@ -122,6 +135,7 @@ export class VentaComponent implements OnInit {
             }
           );
 
+          // Obtener usuarios
           this.authService.listarUsuarios().subscribe(
             (response) => {
               if (response && Array.isArray(response.data)) {
@@ -137,6 +151,7 @@ export class VentaComponent implements OnInit {
             }
           );
 
+          // Obtener empresas
           this.empresaService.listarEmpresas().subscribe(
             (empresas) => {
               this.empresas = empresas;
@@ -147,11 +162,16 @@ export class VentaComponent implements OnInit {
             }
           );
         } else {
-          this.errorMessage = 'La respuesta no es un array';
+          this.errorMessage = 'La respuesta no es un array válido';
         }
+
+        this.isLoading = false; // Ocultar el indicador de carga
       },
       (error) => {
-        this.errorMessage = 'Error al obtener ventas';
+        this.isLoading = false; // Ocultar el indicador de carga
+        // Manejamos el error general
+        this.errorMessage =
+          error.message || 'Hubo un problema al obtener las ventas';
       }
     );
   }

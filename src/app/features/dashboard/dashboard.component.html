@@ -1,10 +1,41 @@
 <div class="dashboard-container">
-  <h1>Bienvenido al Dashboard</h1>
-  <p>¡Has iniciado sesión correctamente!</p>
+  <header>
+    <h1>Bienvenido al Dashboard</h1>
+    <p>¡Has iniciado sesión correctamente!</p>
+  </header>
 
-  <div class="user-info">
-    <p>Correo: {{ userEmail }}</p>
-  </div>
+  <!-- Estadísticas principales -->
+  <section class="stats-container">
+    <div class="stat-card">
+      <h3>Categorías</h3>
+      <p>{{ categoriesCount }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Productos</h3>
+      <p>{{ productsCount }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Ventas</h3>
+      <p>{{ salesCount }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Cotizaciones</h3>
+      <p>{{ quotesCount }}</p>
+    </div>
+  </section>
 
-  <button (click)="logout()">Cerrar sesión</button>
+  <!-- Información del Usuario -->
+  <section class="user-info">
+    <h2>Información del Usuario</h2>
+    <ul>
+      <li><strong>Correo:</strong> {{ userEmail }}</li>
+    </ul>
+  </section>
+
+  <!-- Botones de acción -->
+  <section class="action-buttons">
+    <button (click)="goToProfile()">Ver Perfil</button>
+    <button (click)="goToSettings()">Configuraciones</button>
+    <button (click)="logout()">Cerrar sesión</button>
+  </section>
 </div>

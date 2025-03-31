@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators'; 
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Cotizacion } from '../shared/cotizacion.model';
@@ -23,10 +23,25 @@ export class CotizacionService {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Cotizacion[]>(
-      `${this.cotizacionApiUrl}/listar-por-usuario/${usuarioId}`,
-      { headers }
-    );
+
+    return this.http
+      .get<Cotizacion[]>(
+        `${this.cotizacionApiUrl}/listar-por-usuario/${usuarioId}`,
+        { headers }
+      )
+      .pipe(
+        catchError((error) => {
+          if (error.status === 404 && error.error.message) {
+            // Si el error es 404 y tiene el mensaje que buscamos
+            return throwError(() => new Error(error.error.message));
+          } else {
+            console.error('Error al obtener cotizaciones por usuario:', error);
+            return throwError(
+              () => new Error('Hubo un problema al obtener las cotizaciones.')
+            );
+          }
+        })
+      );
   }
 
   getProductosPorCotizacion(

@@ -91,9 +91,20 @@ export class CotizacionComponent implements OnInit {
   }
 
   listarCotizacionesPorUsuario(usuarioId: number): void {
+    this.isLoading = true; // Mostrar indicador de carga
+
     this.cotizacionService.getCotizacionesPorUsuario(usuarioId).subscribe(
-      (response) => {
-        if (Array.isArray(response)) {
+      (response: any) => {
+        // Verificar si la respuesta contiene el código 404 y el mensaje específico
+        if (
+          response.code === 404 &&
+          response.message ===
+            'El usuario actual no tiene cotizaciones, por favor realice una nueva cotización.'
+        ) {
+          this.errorMessage = response.message; // Mostrar el mensaje específico de la API
+          this.cotizaciones = []; // Limpiar la lista de cotizaciones si no se encontraron
+        } else if (Array.isArray(response)) {
+          // Si la respuesta es un arreglo de cotizaciones, procesamos los datos
           this.cotizaciones = response.map((cotizacion: any) => ({
             CotizacionId: cotizacion.cotizacionId,
             CotizacionCodigo: cotizacion.cotizacionCodigo,
@@ -108,6 +119,7 @@ export class CotizacionComponent implements OnInit {
 
           this.paginateCotizaciones();
 
+          // Obtener clientes
           this.clienteService.getClientes().subscribe(
             (clientes) => {
               this.clientes = clientes;
@@ -118,6 +130,7 @@ export class CotizacionComponent implements OnInit {
             }
           );
 
+          // Obtener usuarios
           this.authService.listarUsuarios().subscribe(
             (response) => {
               if (response && Array.isArray(response.data)) {
@@ -133,6 +146,7 @@ export class CotizacionComponent implements OnInit {
             }
           );
 
+          // Obtener empresas
           this.empresaService.listarEmpresas().subscribe(
             (empresas) => {
               this.empresas = empresas;
@@ -143,11 +157,16 @@ export class CotizacionComponent implements OnInit {
             }
           );
         } else {
-          this.errorMessage = 'La respuesta no es un array';
+          this.errorMessage = 'La respuesta no es un array válido';
         }
+
+        this.isLoading = false; // Ocultar el indicador de carga
       },
       (error) => {
-        this.errorMessage = 'Error al obtener cotizaciones';
+        this.isLoading = false; // Ocultar el indicador de carga
+        // Manejamos el error general
+        this.errorMessage =
+          error.message || 'Hubo un problema al obtener las cotizaciones';
       }
     );
   }
