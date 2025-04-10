@@ -18,11 +18,17 @@ import { PageEvent } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
 import { RegisterCategoriaComponent } from './register-categoria.component';
 
+/**
+ * Componente encargado de la gestión de categorías en la aplicación.
+ *
+ * Permite listar, registrar, editar y eliminar categorías. Además, proporciona
+ * funcionalidades de filtrado y paginación para la visualización de las categorías.
+ */
 @Component({
   selector: 'app-categoria',
   templateUrl: './categoria.component.html',
   styleUrls: ['./categoria.component.css'],
-  standalone: true,
+  standalone: true, // Indica que este componente es independiente.
   imports: [
     CommonModule,
     FormsModule,
@@ -35,23 +41,41 @@ import { RegisterCategoriaComponent } from './register-categoria.component';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    RegisterCategoriaComponent,
+    RegisterCategoriaComponent, // Componente para registrar categorías.
   ],
 })
 export class CategoriaComponent implements OnInit {
+  // Lista de categorías obtenidas desde el servicio.
   categorias: Categoria[] = [];
+  // Fuente de datos para la tabla de categorías, usada con MatTable.
   dataSource = new MatTableDataSource<Categoria>();
+  // Indicador de carga.
   isLoading = true;
+  // Mensaje de error en caso de fallo.
   errorMessage: string | null = null;
+  // Columnas a mostrar en la tabla.
   displayedColumns: string[] = ['Orden', 'CategoriaNombre', 'Acciones'];
+  // Filtro activo.
   activeFilter: string | null = null;
+  // Filtro por nombre de categoría.
   filterNombre: string = '';
+  // Tamaño de página para la paginación.
   pageSize: number = 5;
+  // Página actual para la paginación.
   currentPage: number = 0;
+  // Término de búsqueda para el filtro.
   searchTerm: string = '';
 
+  // Formulario reactivo para crear o editar categorías.
   categoriaForm: any;
 
+  /**
+   * Constructor del componente de categorías.
+   *
+   * @param categoriaService Servicio para interactuar con la API de categorías.
+   * @param authService Servicio para la autenticación del usuario.
+   * @param fb FormBuilder para crear formularios reactivos.
+   */
   constructor(
     private categoriaService: CategoriaService,
     private authService: AuthService,
@@ -62,20 +86,35 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
+  /**
+   * Método de inicialización del componente. Se ejecuta cuando el componente es cargado.
+   * Aquí se llaman a los métodos necesarios para cargar las categorías.
+   */
   ngOnInit(): void {
     this.loadCategorias();
   }
 
-  // Método para filtrar categorías
+  /**
+   * Método para filtrar las categorías en la tabla.
+   *
+   * Filtra las categorías basadas en el término de búsqueda.
+   */
   filterCategorias(): void {
     this.dataSource.filter = this.searchTerm.trim().toLowerCase();
   }
 
+  /**
+   * Cambia el filtro activo. Si ya está activo, se desactiva.
+   *
+   * @param filterName Nombre del filtro a activar o desactivar.
+   */
   toggleFilter(filterName: string): void {
     this.activeFilter = this.activeFilter === filterName ? null : filterName;
   }
 
-  // Método para aplicar filtro por nombre
+  /**
+   * Aplica un filtro adicional por nombre de categoría.
+   */
   applyFilter(): void {
     this.dataSource.data = this.categorias.filter((categoria) => {
       return (
@@ -87,7 +126,13 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Cargar categorías desde el servicio
+  /**
+   * Carga las categorías desde el servicio.
+   *
+   * Realiza una llamada al servicio `CategoriaService` para obtener las categorías asociadas
+   * al usuario autenticado. Si la carga es exitosa, las categorías se asignan a `this.categorias`.
+   * Si hay algún error, se muestra un mensaje de error.
+   */
   loadCategorias(): void {
     this.isLoading = true;
 
@@ -112,7 +157,11 @@ export class CategoriaComponent implements OnInit {
     );
   }
 
-  // Cambiar página en la tabla
+  /**
+   * Método que se ejecuta cuando se cambia de página en la tabla de categorías.
+   *
+   * @param event Evento que contiene los detalles de la nueva página seleccionada.
+   */
   changePage(event: PageEvent): void {
     console.log(
       'Página cambiada:',
@@ -122,7 +171,14 @@ export class CategoriaComponent implements OnInit {
     );
   }
 
-  // Editar una categoría
+  /**
+   * Permite editar una categoría existente.
+   *
+   * Abre un cuadro de diálogo con `SweetAlert2` para que el usuario ingrese un nuevo nombre para la categoría.
+   * Si el usuario confirma, se realiza una solicitud al servicio para actualizar la categoría.
+   *
+   * @param categoria La categoría que se desea editar.
+   */
   editCategoria(categoria: Categoria): void {
     Swal.fire({
       title: 'Editar categoría',
@@ -164,7 +220,14 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Eliminar una categoría
+  /**
+   * Permite eliminar una categoría.
+   *
+   * Abre un cuadro de diálogo con `SweetAlert2` preguntando al usuario si está seguro de eliminar la categoría.
+   * Si el usuario confirma, se realiza una solicitud al servicio para eliminar la categoría.
+   *
+   * @param categoria La categoría que se desea eliminar.
+   */
   deleteCategoria(categoria: Categoria): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -198,7 +261,12 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Mostrar el formulario para registrar una nueva categoría
+  /**
+   * Abre el formulario para registrar una nueva categoría.
+   *
+   * Utiliza `SweetAlert2` para pedir al usuario el nombre de la nueva categoría.
+   * Si el nombre es válido, se registra la categoría llamando al servicio correspondiente.
+   */
   showRegisterCategoria: boolean = false;
 
   openRegisterCategoria(): void {
@@ -244,7 +312,9 @@ export class CategoriaComponent implements OnInit {
     });
   }
 
-  // Cerrar el formulario de registrar categoría
+  /**
+   * Cierra el formulario de registro de categoría.
+   */
   closeRegisterCategoria(): void {
     this.showRegisterCategoria = false;
   }
