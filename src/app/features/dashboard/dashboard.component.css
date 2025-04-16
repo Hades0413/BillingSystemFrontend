@@ -1,6 +1,4 @@
 .dashboard-container {
-  max-width: 1200px;
-  margin: 30px auto;
   padding: 30px;
   background-color: #fff;
   border-radius: 10px;
@@ -113,4 +111,12 @@ p {
 
 .action-buttons button:last-child {
   margin-right: 0;
+}
+.chart-container {
+  margin-top: 30px;
+}
+
+canvas {
+  max-width: 100%;
+  height: 400px;
 }

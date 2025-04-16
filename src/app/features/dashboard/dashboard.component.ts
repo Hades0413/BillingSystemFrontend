@@ -22,12 +22,17 @@ export class DashboardComponent implements OnInit {
   salesCount: number = 0;
   quotesCount: number = 0;
 
-  // Datos para el gráfico
-  chartData: number[] = [];
+  // Datos para los gráficos
+  chartDataCotizaciones: number[] = [];
   chartLabels: string[] = []; // Etiquetas para cada día del mes actual
+  chartDataVentas: number[] = []; // Datos para ventas por día
 
-  // Instanciamos el gráfico
-  chart: any;
+  // Instanciamos los gráficos
+  chartCotizaciones: any;
+  chartVentas: any;
+
+  currentMonth: string = '';
+  currentYear: number = 0;
 
   constructor(
     private authService: AuthService,
@@ -41,6 +46,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     // Registramos todos los elementos necesarios de chart.js
     Chart.register(...registerables);
+
+    // Obtenemos el mes y año actuales
+    const currentDate = new Date();
+    this.currentMonth = this.getMonthName(currentDate.getMonth());
+    this.currentYear = currentDate.getFullYear();
 
     this.checkAuthentication();
   }
@@ -82,7 +92,44 @@ export class DashboardComponent implements OnInit {
 
     this.ventaService.getVentasPorUsuario(usuarioId).subscribe(
       (response) => {
-        this.salesCount = response.data.length;
+        if (response && response.data && Array.isArray(response.data)) {
+          const ventas = response.data;
+          this.salesCount = ventas.length;
+
+          // Filtramos las ventas para el mes actual
+          const currentMonth = new Date().getMonth(); // Mes actual (0-11)
+          const currentYear = new Date().getFullYear(); // Año actual
+
+          // Creamos un arreglo con el conteo de ventas por día del mes
+          const ventasDelMes = ventas.filter((venta: any) => {
+            const ventaDate = new Date(venta.ventaFecha); // Convertimos la fecha
+            const ventaMonth = ventaDate.getMonth(); // Mes de la venta
+            const ventaYear = ventaDate.getFullYear(); // Año de la venta
+
+            return ventaMonth === currentMonth && ventaYear === currentYear;
+          });
+
+          const dailySales: number[] = new Array(31).fill(0); // Inicializamos un arreglo de 31 días
+
+          // Contamos las ventas por día
+          ventasDelMes.forEach((venta: any) => {
+            const ventaDate = new Date(venta.ventaFecha);
+            const dayOfMonth = ventaDate.getDate() - 1; // Obtenemos el día (de 0 a 30)
+            dailySales[dayOfMonth]++;
+          });
+
+          // Asignamos las etiquetas del gráfico (días del mes)
+          this.chartLabels = Array.from(
+            { length: 31 },
+            (_, i) => `${i + 1} ${this.currentMonth}`
+          );
+          this.chartDataVentas = dailySales;
+
+          // Inicializamos el gráfico de ventas
+          this.createVentasChart();
+        } else {
+          console.error('Error en la estructura de la respuesta de ventas');
+        }
       },
       (error) => {
         console.error('Error al obtener ventas:', error);
@@ -122,12 +169,12 @@ export class DashboardComponent implements OnInit {
           // Asignamos las etiquetas del gráfico (días del mes)
           this.chartLabels = Array.from(
             { length: 31 },
-            (_, i) => `${i + 1} Abril`
+            (_, i) => `${i + 1} ${this.currentMonth}`
           );
-          this.chartData = dailyQuotes;
+          this.chartDataCotizaciones = dailyQuotes;
 
-          // Inicializamos el gráfico de Chart.js
-          this.createChart();
+          // Inicializamos el gráfico de cotizaciones
+          this.createCotizacionesChart();
         } else {
           console.error(
             'Error en la estructura de la respuesta de cotizaciones'
@@ -140,24 +187,41 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  createChart(): void {
-    // Si ya existe un gráfico, lo destruimos antes de crear uno nuevo
-    if (this.chart) {
-      this.chart.destroy();
+  // Función para obtener el nombre del mes
+  getMonthName(monthIndex: number): string {
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    return months[monthIndex];
+  }
+
+  createCotizacionesChart(): void {
+    if (this.chartCotizaciones) {
+      this.chartCotizaciones.destroy();
     }
 
-    // Creamos el nuevo gráfico
-    this.chart = new Chart('cotizacionesChart', {
-      type: 'line', // Cambiamos a gráfico de línea
+    this.chartCotizaciones = new Chart('cotizacionesChart', {
+      type: 'line',
       data: {
-        labels: this.chartLabels, // Etiquetas: días del mes
+        labels: this.chartLabels,
         datasets: [
           {
             label: 'Cotizaciones por día',
-            data: this.chartData, // Datos de cotizaciones por día
-            fill: false, // No queremos que el área debajo de la línea esté rellena
+            data: this.chartDataCotizaciones,
+            fill: false,
             borderColor: '#42A5F5',
-            tension: 0.1, // Curvatura de la línea
+            tension: 0.1,
             borderWidth: 2,
           },
         ],
@@ -166,7 +230,7 @@ export class DashboardComponent implements OnInit {
         responsive: true,
         plugins: {
           legend: {
-            position: 'top', // Colocamos la leyenda en la parte superior
+            position: 'top',
             labels: {
               font: {
                 size: 14,
@@ -177,7 +241,62 @@ export class DashboardComponent implements OnInit {
           },
           title: {
             display: true,
-            text: 'Cotizaciones por Día en Abril', // Título explicativo
+            text: `Cotizaciones por Día en ${this.currentMonth} ${this.currentYear}`,
+            font: {
+              size: 18,
+              family: 'Arial, sans-serif',
+            },
+            color: '#000000',
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  createVentasChart(): void {
+    if (this.chartVentas) {
+      this.chartVentas.destroy();
+    }
+
+    this.chartVentas = new Chart('ventasChart', {
+      type: 'line',
+      data: {
+        labels: this.chartLabels,
+        datasets: [
+          {
+            label: 'Ventas por día',
+            data: this.chartDataVentas,
+            fill: false,
+            borderColor: '#66BB6A',
+            tension: 0.1,
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              font: {
+                size: 14,
+                family: 'Arial, sans-serif',
+              },
+              color: '#000000',
+            },
+          },
+          title: {
+            display: true,
+            text: `Ventas por Día en ${this.currentMonth} ${this.currentYear}`,
             font: {
               size: 18,
               family: 'Arial, sans-serif',
