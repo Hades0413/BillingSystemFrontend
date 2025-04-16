@@ -6,11 +6,13 @@ import { ProductoService } from '../../producto/producto.service';
 import { VentaService } from '../../venta/venta.service';
 import { CotizacionService } from '../../cotizacion/cotizacion.service';
 import { Chart, registerables } from 'chart.js';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  imports: [CommonModule],
 })
 export class DashboardComponent implements OnInit {
   userEmail: string | null = '';
@@ -34,6 +36,9 @@ export class DashboardComponent implements OnInit {
 
   currentMonth: string = '';
   currentYear: number = 0;
+
+  totalVentasMonto: number = 0; // Variable para la suma del monto total de ventas
+  totalCotizacionesMonto: number = 0; // Variable para la suma del monto total de cotizaciones
 
   constructor(
     private authService: AuthService,
@@ -110,12 +115,16 @@ export class DashboardComponent implements OnInit {
           });
 
           const dailySales: number[] = new Array(31).fill(0);
+          let totalMontoVentas: number = 0; // Variable para acumular el monto de las ventas
 
           ventasDelMes.forEach((venta: any) => {
             const ventaDate = new Date(venta.ventaFecha);
             const dayOfMonth = ventaDate.getDate() - 1;
             dailySales[dayOfMonth]++;
+            totalMontoVentas += venta.ventaMontoTotal; // Sumar el monto de cada venta
           });
+
+          this.totalVentasMonto = totalMontoVentas; // Asignar la suma total de ventas
 
           this.chartLabels = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
           this.chartDataVentas = dailySales;
@@ -146,41 +155,39 @@ export class DashboardComponent implements OnInit {
           const cotizaciones = response.data;
           this.quotesCount = cotizaciones.length;
 
-          // Filtramos las cotizaciones para el mes actual
-          const currentMonth = new Date().getMonth(); // Mes actual (0-11)
-          const currentYear = new Date().getFullYear(); // Año actual
+          const currentMonth = new Date().getMonth();
+          const currentYear = new Date().getFullYear();
 
-          // Creamos un arreglo con el conteo de cotizaciones por día del mes
           const cotizacionesDelMes = cotizaciones.filter((cotizacion: any) => {
-            const cotizacionDate = new Date(cotizacion.cotizacionFecha); // Convertimos la fecha
-            const cotizacionMonth = cotizacionDate.getMonth(); // Mes de la cotización
-            const cotizacionYear = cotizacionDate.getFullYear(); // Año de la cotización
+            const cotizacionDate = new Date(cotizacion.cotizacionFecha);
+            const cotizacionMonth = cotizacionDate.getMonth();
+            const cotizacionYear = cotizacionDate.getFullYear();
 
             return (
               cotizacionMonth === currentMonth && cotizacionYear === currentYear
             );
           });
 
-          const dailyQuotes: number[] = new Array(31).fill(0); // Inicializamos un arreglo de 31 días
+          const dailyQuotes: number[] = new Array(31).fill(0);
+          let totalMontoCotizaciones: number = 0; // Variable para acumular el monto total de las cotizaciones
 
-          // Contamos las cotizaciones por día
           cotizacionesDelMes.forEach((cotizacion: any) => {
             const cotizacionDate = new Date(cotizacion.cotizacionFecha);
-            const dayOfMonth = cotizacionDate.getDate() - 1; // Obtenemos el día (de 0 a 30)
+            const dayOfMonth = cotizacionDate.getDate() - 1;
             dailyQuotes[dayOfMonth]++;
+            totalMontoCotizaciones += cotizacion.cotizacionMontoTotal; // Sumar el monto de cada cotización
           });
 
-          // Asignamos las etiquetas del gráfico (días del mes)
+          this.totalCotizacionesMonto = totalMontoCotizaciones; // Asignar la suma total de cotizaciones
+
           this.chartLabels = Array.from(
             { length: 31 },
             (_, i) => `${i + 1} ${this.currentMonth}`
           );
           this.chartDataCotizaciones = dailyQuotes;
 
-          // Inicializamos el gráfico de cotizaciones
           this.createCotizacionesChart();
 
-          // Ahora calculamos las cotizaciones por mes para el gráfico circular
           const monthlyQuotesCount: number[] = new Array(12).fill(0);
           cotizaciones.forEach((cotizacion: any) => {
             const cotizacionDate = new Date(cotizacion.cotizacionFecha);

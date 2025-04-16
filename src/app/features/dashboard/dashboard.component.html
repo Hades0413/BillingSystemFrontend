@@ -15,12 +15,16 @@
       <p>{{ productsCount }}</p>
     </div>
     <div class="stat-card">
-      <h3>Ventas</h3>
-      <p>{{ salesCount }}</p>
+      <h3>Ventas de {{ currentMonth }}</h3>
+      <p>{{ salesCount }} Ventas</p>
+      <p>{{ totalVentasMonto | currency }}</p>
     </div>
+
+    <!-- Tarjeta de Cotizaciones -->
     <div class="stat-card">
       <h3>Cotizaciones</h3>
-      <p>{{ quotesCount }}</p>
+      <p>{{ quotesCount }} Cotizaciones</p>
+      <p>{{ totalCotizacionesMonto | currency : "USD" }}</p>
     </div>
   </section>
 
