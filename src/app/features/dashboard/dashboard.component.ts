@@ -5,7 +5,7 @@ import { CategoriaService } from '../../categoria/categoria.service';
 import { ProductoService } from '../../producto/producto.service';
 import { VentaService } from '../../venta/venta.service';
 import { CotizacionService } from '../../cotizacion/cotizacion.service';
-import { Chart, registerables } from 'chart.js'; // Importamos chart.js
+import { Chart, registerables } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,20 +16,21 @@ export class DashboardComponent implements OnInit {
   userEmail: string | null = '';
   userId: string | null = '';
 
-  // Estadísticas
   categoriesCount: number = 0;
   productsCount: number = 0;
   salesCount: number = 0;
   quotesCount: number = 0;
 
-  // Datos para los gráficos
   chartDataCotizaciones: number[] = [];
-  chartLabels: string[] = []; // Etiquetas para cada día del mes actual
-  chartDataVentas: number[] = []; // Datos para ventas por día
+  chartLabels: string[] = [];
+  chartDataVentas: number[] = [];
+  chartDataVentasPorMes: number[] = [];
+  chartDataCotizacionesPorMes: number[] = [];
 
-  // Instanciamos los gráficos
   chartCotizaciones: any;
   chartVentas: any;
+  chartVentasPie: any;
+  chartCotizacionesPie: any;
 
   currentMonth: string = '';
   currentYear: number = 0;
@@ -44,10 +45,8 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Registramos todos los elementos necesarios de chart.js
     Chart.register(...registerables);
 
-    // Obtenemos el mes y año actuales
     const currentDate = new Date();
     this.currentMonth = this.getMonthName(currentDate.getMonth());
     this.currentYear = currentDate.getFullYear();
@@ -72,6 +71,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadDashboardData(usuarioId: number): void {
+    // Cargar datos de categorías
     this.categoriaService.getCategoriasPorUsuario().subscribe(
       (response) => {
         this.categoriesCount = response.data.length;
@@ -81,6 +81,7 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+    // Cargar datos de productos
     this.productoService.getProductosPorUsuario(usuarioId).subscribe(
       (response) => {
         this.productsCount = response.data.length;
@@ -90,52 +91,55 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+    // Cargar ventas
     this.ventaService.getVentasPorUsuario(usuarioId).subscribe(
       (response) => {
         if (response && response.data && Array.isArray(response.data)) {
           const ventas = response.data;
           this.salesCount = ventas.length;
 
-          // Filtramos las ventas para el mes actual
-          const currentMonth = new Date().getMonth(); // Mes actual (0-11)
-          const currentYear = new Date().getFullYear(); // Año actual
+          const currentMonth = new Date().getMonth();
+          const currentYear = new Date().getFullYear();
 
-          // Creamos un arreglo con el conteo de ventas por día del mes
           const ventasDelMes = ventas.filter((venta: any) => {
-            const ventaDate = new Date(venta.ventaFecha); // Convertimos la fecha
-            const ventaMonth = ventaDate.getMonth(); // Mes de la venta
-            const ventaYear = ventaDate.getFullYear(); // Año de la venta
+            const ventaDate = new Date(venta.ventaFecha);
+            const ventaMonth = ventaDate.getMonth();
+            const ventaYear = ventaDate.getFullYear();
 
             return ventaMonth === currentMonth && ventaYear === currentYear;
           });
 
-          const dailySales: number[] = new Array(31).fill(0); // Inicializamos un arreglo de 31 días
+          const dailySales: number[] = new Array(31).fill(0);
 
-          // Contamos las ventas por día
           ventasDelMes.forEach((venta: any) => {
             const ventaDate = new Date(venta.ventaFecha);
-            const dayOfMonth = ventaDate.getDate() - 1; // Obtenemos el día (de 0 a 30)
+            const dayOfMonth = ventaDate.getDate() - 1;
             dailySales[dayOfMonth]++;
           });
 
-          // Asignamos las etiquetas del gráfico (días del mes)
-          this.chartLabels = Array.from(
-            { length: 31 },
-            (_, i) => `${i + 1} ${this.currentMonth}`
-          );
+          this.chartLabels = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
           this.chartDataVentas = dailySales;
 
-          // Inicializamos el gráfico de ventas
           this.createVentasChart();
-        } else {
-          console.error('Error en la estructura de la respuesta de ventas');
         }
+
+        const monthlySalesCount: number[] = new Array(12).fill(0);
+        const ventas = response.data;
+        ventas.forEach((venta: any) => {
+          const ventaDate = new Date(venta.ventaFecha);
+          const month = ventaDate.getMonth();
+          monthlySalesCount[month]++;
+        });
+
+        this.chartDataVentasPorMes = monthlySalesCount;
+        this.createVentasPieChart();
       },
       (error) => {
         console.error('Error al obtener ventas:', error);
       }
     );
 
+    // Cargar cotizaciones
     this.cotizacionService.getCotizacionesPorUsuario(usuarioId).subscribe(
       (response) => {
         if (response && response.data && Array.isArray(response.data)) {
@@ -175,6 +179,17 @@ export class DashboardComponent implements OnInit {
 
           // Inicializamos el gráfico de cotizaciones
           this.createCotizacionesChart();
+
+          // Ahora calculamos las cotizaciones por mes para el gráfico circular
+          const monthlyQuotesCount: number[] = new Array(12).fill(0);
+          cotizaciones.forEach((cotizacion: any) => {
+            const cotizacionDate = new Date(cotizacion.cotizacionFecha);
+            const month = cotizacionDate.getMonth();
+            monthlyQuotesCount[month]++;
+          });
+
+          this.chartDataCotizacionesPorMes = monthlyQuotesCount;
+          this.createCotizacionesPieChart();
         } else {
           console.error(
             'Error en la estructura de la respuesta de cotizaciones'
@@ -187,7 +202,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  // Función para obtener el nombre del mes
   getMonthName(monthIndex: number): string {
     const months = [
       'Enero',
@@ -204,6 +218,61 @@ export class DashboardComponent implements OnInit {
       'Diciembre',
     ];
     return months[monthIndex];
+  }
+
+  createVentasChart(): void {
+    if (this.chartVentas) {
+      this.chartVentas.destroy();
+    }
+
+    this.chartVentas = new Chart('ventasChart', {
+      type: 'line',
+      data: {
+        labels: this.chartLabels,
+        datasets: [
+          {
+            label: 'Ventas por día',
+            data: this.chartDataVentas,
+            fill: false,
+            borderColor: '#66BB6A',
+            tension: 0.1,
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              font: {
+                size: 14,
+                family: 'Arial, sans-serif',
+              },
+              color: '#000000',
+            },
+          },
+          title: {
+            display: true,
+            text: `Ventas por Día en ${this.currentMonth} ${this.currentYear}`,
+            font: {
+              size: 18,
+              family: 'Arial, sans-serif',
+            },
+            color: '#000000',
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+      },
+    });
   }
 
   createCotizacionesChart(): void {
@@ -261,23 +330,53 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  createVentasChart(): void {
-    if (this.chartVentas) {
-      this.chartVentas.destroy();
+  createVentasPieChart(): void {
+    if (this.chartVentasPie) {
+      this.chartVentasPie.destroy();
     }
 
-    this.chartVentas = new Chart('ventasChart', {
-      type: 'line',
+    const totalVentas = this.chartDataVentasPorMes.reduce(
+      (sum, value) => sum + value,
+      0
+    );
+    const ventasPorMes = this.chartDataVentasPorMes.map(
+      (value) => (value / totalVentas) * 100
+    );
+
+    this.chartVentasPie = new Chart('ventasPieChart', {
+      type: 'pie',
       data: {
-        labels: this.chartLabels,
+        labels: [
+          'Enero',
+          'Febrero',
+          'Marzo',
+          'Abril',
+          'Mayo',
+          'Junio',
+          'Julio',
+          'Agosto',
+          'Septiembre',
+          'Octubre',
+          'Noviembre',
+          'Diciembre',
+        ],
         datasets: [
           {
-            label: 'Ventas por día',
-            data: this.chartDataVentas,
-            fill: false,
-            borderColor: '#66BB6A',
-            tension: 0.1,
-            borderWidth: 2,
+            data: ventasPorMes,
+            backgroundColor: [
+              '#66BB6A',
+              '#42A5F5',
+              '#FFEB3B',
+              '#FF7043',
+              '#8E24AA',
+              '#3949AB',
+              '#8BC34A',
+              '#FF5722',
+              '#00ACC1',
+              '#607D8B',
+              '#FF9800',
+              '#CDDC39',
+            ],
           },
         ],
       },
@@ -296,7 +395,7 @@ export class DashboardComponent implements OnInit {
           },
           title: {
             display: true,
-            text: `Ventas por Día en ${this.currentMonth} ${this.currentYear}`,
+            text: `Ventas por Mes`,
             font: {
               size: 18,
               family: 'Arial, sans-serif',
@@ -304,12 +403,81 @@ export class DashboardComponent implements OnInit {
             color: '#000000',
           },
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1,
+      },
+    });
+  }
+
+  createCotizacionesPieChart(): void {
+    if (this.chartCotizacionesPie) {
+      this.chartCotizacionesPie.destroy();
+    }
+
+    const totalCotizaciones = this.chartDataCotizacionesPorMes.reduce(
+      (sum, value) => sum + value,
+      0
+    );
+    const cotizacionesPorMes = this.chartDataCotizacionesPorMes.map(
+      (value) => (value / totalCotizaciones) * 100
+    );
+
+    this.chartCotizacionesPie = new Chart('cotizacionesPieChart', {
+      type: 'pie',
+      data: {
+        labels: [
+          'Enero',
+          'Febrero',
+          'Marzo',
+          'Abril',
+          'Mayo',
+          'Junio',
+          'Julio',
+          'Agosto',
+          'Septiembre',
+          'Octubre',
+          'Noviembre',
+          'Diciembre',
+        ],
+        datasets: [
+          {
+            data: cotizacionesPorMes,
+            backgroundColor: [
+              '#42A5F5',
+              '#66BB6A',
+              '#FFEB3B',
+              '#FF7043',
+              '#8E24AA',
+              '#3949AB',
+              '#8BC34A',
+              '#FF5722',
+              '#00ACC1',
+              '#607D8B',
+              '#FF9800',
+              '#CDDC39',
+            ],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              font: {
+                size: 14,
+                family: 'Arial, sans-serif',
+              },
+              color: '#000000',
             },
+          },
+          title: {
+            display: true,
+            text: `Cotizaciones por Mes`,
+            font: {
+              size: 18,
+              family: 'Arial, sans-serif',
+            },
+            color: '#000000',
           },
         },
       },
