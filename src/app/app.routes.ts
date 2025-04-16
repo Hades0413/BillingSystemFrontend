@@ -22,7 +22,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'productos', component: DashboardPrducto },
       { path: 'ventas', component: DashboardVentas },
-      { path: 'crear-cotizacion', component: CotizacionRegisterComponent }, 
+      { path: 'crear-cotizacion', component: CotizacionRegisterComponent },
       { path: 'crear-venta', component: RegisterVentaComponent },
       { path: 'cuenta', component: CuentaComponent }  /*
       { path: 'ventas', component: VentasComponent },*/,
