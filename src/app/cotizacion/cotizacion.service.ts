@@ -41,28 +41,22 @@ export class CotizacionService {
    * @returns Un observable que emite un array de objetos `Cotizacion`.
    * @throws Error Si no se encuentra el token de autenticación o si ocurre un error en la API.
    */
-  getCotizacionesPorUsuario(usuarioId: number): Observable<Cotizacion[]> {
-    // Obtener el token de autenticación del servicio AuthService
+  getCotizacionesPorUsuario(usuarioId: number): Observable<any> {
     const token = this.authService.getToken();
 
-    // Verificar si se obtuvo el token
     if (!token) {
       throw new Error('No se encontró el token de autenticación.');
     }
 
-    // Crear las cabeceras de la solicitud incluyendo el token de autenticación
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // Realizar la solicitud GET a la API y retornar el observable
     return this.http
-      .get<Cotizacion[]>(
-        `${this.cotizacionApiUrl}/listar-por-usuario/${usuarioId}`,
-        { headers }
-      )
+      .get<any>(`${this.cotizacionApiUrl}/listar-por-usuario/${usuarioId}`, {
+        headers,
+      })
       .pipe(
         catchError((error) => {
           if (error.status === 404 && error.error.message) {
-            // Si el error es 404 y tiene el mensaje que buscamos
             return throwError(() => new Error(error.error.message));
           } else {
             console.error('Error al obtener cotizaciones por usuario:', error);

@@ -101,11 +101,10 @@ export class CotizacionComponent implements OnInit {
           response.message ===
             'El usuario actual no tiene cotizaciones, por favor realice una nueva cotización.'
         ) {
-          this.errorMessage = response.message; // Mostrar el mensaje específico de la API
-          this.cotizaciones = []; // Limpiar la lista de cotizaciones si no se encontraron
-        } else if (Array.isArray(response)) {
-          // Si la respuesta es un arreglo de cotizaciones, procesamos los datos
-          this.cotizaciones = response.map((cotizacion: any) => ({
+          this.errorMessage = response.message;
+          this.cotizaciones = [];
+        } else if (Array.isArray(response.data)) {
+          this.cotizaciones = response.data.map((cotizacion: any) => ({
             CotizacionId: cotizacion.cotizacionId,
             CotizacionCodigo: cotizacion.cotizacionCodigo,
             CotizacionFecha: cotizacion.cotizacionFecha,

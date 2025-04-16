@@ -80,13 +80,18 @@ export class DashboardComponent implements OnInit {
     );
 
     this.cotizacionService.getCotizacionesPorUsuario(usuarioId).subscribe(
-      (cotizaciones) => {
-        this.quotesCount = cotizaciones.length;
+      (response) => {
+        if (response && Array.isArray(response.data)) {
+          this.quotesCount = response.data.length;
+        } else {
+          console.error('Error en la estructura de la respuesta de cotizaciones');
+        }
       },
       (error) => {
         console.error('Error al obtener cotizaciones:', error);
       }
     );
+
   }
 
   logout(): void {

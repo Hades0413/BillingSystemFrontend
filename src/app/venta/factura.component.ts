@@ -86,8 +86,10 @@ export class FacturaComponent implements OnInit {
     this.ventaService.getVentasPorUsuario(usuarioId).subscribe(
       (response) => {
         this.isLoading = false;
-        if (Array.isArray(response)) {
-          this.ventas = response.map((venta: any) => ({
+
+        // Acceder al array de ventas dentro de 'data'
+        if (Array.isArray(response.data)) {
+          this.ventas = response.data.map((venta: any) => ({
             VentaId: venta.ventaId,
             VentaVenta: venta.ventaVenta,
             VentaCodigo: venta.ventaCodigo,
@@ -95,8 +97,8 @@ export class FacturaComponent implements OnInit {
             VentaMontoTotal: venta.ventaMontoTotal,
             VentaMontoDescuento: venta.ventaMontoDescuento,
             VentaMontoImpuesto: venta.ventaMontoImpuesto,
-            FormaPago: venta.FormaPago,
-            ClienteRuc: venta.ClienteRuc,
+            FormaPago: venta.ventaFormaPago,
+            ClienteRuc: venta.ventaRucCliente,
             TipoComprobanteId: venta.tipoComprobanteId,
             UsuarioId: venta.usuarioId,
             EmpresaId: venta.empresaId,
@@ -108,7 +110,7 @@ export class FacturaComponent implements OnInit {
           this.obtenerTiposDeComprobante();
           this.obtenerUsuarios();
         } else {
-          this.errorMessage = 'La respuesta no es un array';
+          this.errorMessage = 'La respuesta no contiene un array de ventas';
         }
       },
       (error) => {
